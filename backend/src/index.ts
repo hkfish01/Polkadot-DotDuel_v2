@@ -16,8 +16,19 @@ const app = express()
 const PORT = process.env.PORT || 3000
 
 // 中間件
+const defaultOrigins = ['http://localhost:5173', 'http://localhost:5174']
+const allowedOrigins = (process.env.ALLOWED_ORIGINS?.split(',') || defaultOrigins)
+  .map((origin) => origin.trim())
+  .filter(Boolean)
+
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173'],
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, origin)
+    }
+    console.warn(`🚫 Blocked CORS request from ${origin}. Set ALLOWED_ORIGINS to permit it.`)
+    return callback(new Error('Not allowed by CORS'))
+  },
   credentials: true
 }))
 app.use(express.json())
