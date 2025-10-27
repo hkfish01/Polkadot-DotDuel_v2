@@ -16,11 +16,10 @@ interface MatchCardProps {
   }
 }
 
-const statusNames = ['等待中', '進行中', '等待結果', '已完成', '已取消']
+const statusNames = ['等待中', '進行中', '已完成', '已取消']
 const statusColors = [
   'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
   'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-  'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
   'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
   'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
 ]
@@ -48,8 +47,12 @@ export default function MatchCard({ match }: MatchCardProps) {
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[match.status]}`}>
-                {statusNames[match.status]}
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  statusColors[match.status] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+                }`}
+              >
+                {statusNames[match.status] ?? '未知狀態'}
               </span>
               <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
                 {match.mode === 0 ? '裁判模式' : 'Oracle模式'}

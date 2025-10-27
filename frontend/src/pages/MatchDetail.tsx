@@ -1,7 +1,8 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { useAccount } from 'wagmi'
-import { useContract, useMatchData } from '../hooks/useContract'
+import { useContract } from '../hooks/useContract'
+import { useMatchDetail } from '../hooks/useMatchesApi'
 import { formatEther } from 'ethers'
 import toast from 'react-hot-toast'
 import {
@@ -14,16 +15,18 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
+  RefreshCw,
 } from 'lucide-react'
 
-const statusNames = ['等待中', '進行中', '等待結果', '已完成', '已取消']
+const statusNames = ['等待中', '進行中', '已完成', '已取消']
 const statusColors = [
   'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
   'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-  'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
   'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
   'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
 ]
+
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as const
 
 export default function MatchDetail() {
   const { id } = useParams<{ id: string }>()
@@ -32,7 +35,13 @@ export default function MatchDetail() {
   const [winnerAddress, setWinnerAddress] = useState('')
 
   const matchId = id ? parseInt(id) : 0
-  const { match, isLoading, error } = useMatchData(matchId)
+  const {
+    data: match,
+    isLoading,
+    error,
+    refetch,
+    isRefetching
+  } = useMatchDetail(matchId)
   const {
     joinMatch,
     submitResultByReferee,
@@ -43,7 +52,7 @@ export default function MatchDetail() {
   } = useContract()
 
   const formatAddress = (addr: string) => {
-    if (!addr || addr === '0x0000000000000000000000000000000000000000') return '等待加入'
+    if (!addr || addr === ZERO_ADDRESS) return '等待加入'
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`
   }
 
@@ -65,9 +74,12 @@ export default function MatchDetail() {
 
     if (!match) return
 
+    const stakeAmountWei = BigInt(match.stakeAmountWei ?? '0')
+
     try {
-      await joinMatch(matchId, match.stakeAmount)
+      await joinMatch(matchId, stakeAmountWei)
       toast.success('成功加入比賽！')
+      await refetch()
     } catch (error: any) {
       console.error('加入比賽失敗:', error)
       toast.error(error?.message || '加入比賽失敗')
@@ -85,10 +97,13 @@ export default function MatchDetail() {
       return
     }
 
+    if (!match) return
+
     try {
       await submitResultByReferee(matchId, winnerAddress)
       toast.success('結果提交成功！')
       setWinnerAddress('')
+      await refetch()
     } catch (error: any) {
       console.error('提交結果失敗:', error)
       toast.error(error?.message || '提交結果失敗')
@@ -100,9 +115,12 @@ export default function MatchDetail() {
       return
     }
 
+    if (!match) return
+
     try {
       await cancelMatch(matchId)
       toast.success('比賽已取消！')
+      await refetch()
     } catch (error: any) {
       console.error('取消比賽失敗:', error)
       toast.error(error?.message || '取消比賽失敗')
@@ -139,18 +157,28 @@ export default function MatchDetail() {
     )
   }
 
+  const stakeAmountWei = BigInt(match.stakeAmountWei ?? '0')
+  const totalPoolWei = stakeAmountWei * BigInt(2)
+  const normalizedAddress = address?.toLowerCase() ?? ''
+  const creatorAddress = match.creator?.toLowerCase?.() ?? ''
+  const refereeAddress = match.referee?.toLowerCase?.() ?? ''
+
   const participantCount = match.participants.filter(
-    (p) => p !== '0x0000000000000000000000000000000000000000'
+    (participant: string) => participant !== ZERO_ADDRESS
   ).length
 
-  const isCreator = address?.toLowerCase() === match.creator.toLowerCase()
-  const isParticipant = match.participants.some(
-    (p) => p.toLowerCase() === address?.toLowerCase()
-  )
+  const isCreator = normalizedAddress !== '' && normalizedAddress === creatorAddress
+  const isReferee = normalizedAddress !== '' && normalizedAddress === refereeAddress
+  const isParticipant =
+    normalizedAddress !== '' &&
+    match.participants.some(
+      (participant: string) => participant.toLowerCase() === normalizedAddress
+    )
+
   const canJoin =
     isConnected && !isParticipant && match.status === 0 && participantCount < 2
   const canSubmitResult =
-    isConnected && isCreator && match.mode === 0 && match.status === 2
+    isConnected && isReferee && match.mode === 0 && match.status === 1
   const canCancel = isConnected && isCreator && match.status === 0
 
   return (
@@ -164,20 +192,31 @@ export default function MatchDetail() {
           <ArrowLeft size={20} />
           返回比賽列表
         </button>
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
               比賽詳情
             </h1>
             <p className="text-gray-600 dark:text-gray-400">比賽 ID: #{matchId}</p>
           </div>
-          <span
-            className={`px-4 py-2 rounded-full text-sm font-medium ${
-              statusColors[match.status]
-            }`}
-          >
-            {statusNames[match.status]}
-          </span>
+          <div className="flex items-center gap-3">
+            <span
+              className={`px-4 py-2 rounded-full text-sm font-medium ${
+                statusColors[match.status] ??
+                'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+              }`}
+            >
+              {statusNames[match.status] ?? '未知狀態'}
+            </span>
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-pink-600 dark:text-pink-300 border border-pink-500/60 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/30 transition-colors"
+            >
+              <RefreshCw size={16} className={isRefetching ? 'animate-spin' : ''} />
+              {isRefetching ? '更新中...' : '重新整理'}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -208,10 +247,10 @@ export default function MatchDetail() {
                 押注金額
               </p>
               <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                {formatEther(match.stakeAmount)} DOT
+                {formatEther(stakeAmountWei)} DOT
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                獎池總額: {formatEther(match.stakeAmount * BigInt(2))} DOT
+                獎池總額: {formatEther(totalPoolWei)} DOT
               </p>
             </div>
           </div>
@@ -278,11 +317,21 @@ export default function MatchDetail() {
         </div>
 
         <div className="space-y-3">
-          {match.participants.map((participant, index) => {
-            const isEmpty =
-              participant === '0x0000000000000000000000000000000000000000'
-            const isCurrentUser =
-              address?.toLowerCase() === participant.toLowerCase()
+          {match.participants.map((participant: string, index: number) => {
+            const isEmpty = participant === ZERO_ADDRESS
+            const participantAddress = participant.toLowerCase()
+            const isCurrentUser = normalizedAddress !== '' && normalizedAddress === participantAddress
+
+            const labels: string[] = []
+            if (participantAddress === creatorAddress) {
+              labels.push('創建者')
+            }
+            if (participantAddress === refereeAddress && match.mode === 0) {
+              labels.push('裁判')
+            }
+            if (isCurrentUser) {
+              labels.push('你')
+            }
 
             return (
               <div
@@ -297,10 +346,9 @@ export default function MatchDetail() {
                     <p className="font-mono text-sm font-medium text-gray-900 dark:text-white">
                       {isEmpty ? '等待玩家加入...' : formatAddress(participant)}
                     </p>
-                    {!isEmpty && (
+                    {!isEmpty && labels.length > 0 && (
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {index === 0 && '創建者'}
-                        {isCurrentUser && ' (你)'}
+                        {labels.join(' · ')}
                       </p>
                     )}
                   </div>
@@ -323,7 +371,7 @@ export default function MatchDetail() {
               加入比賽
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              押注 {formatEther(match.stakeAmount)} DOT 加入這場比賽
+              押注 {formatEther(stakeAmountWei)} DOT 加入這場比賽
             </p>
             <button
               onClick={handleJoinMatch}
@@ -419,9 +467,9 @@ export default function MatchDetail() {
             <p className="text-gray-600 dark:text-gray-400">
               {!isConnected
                 ? '請連接錢包以進行操作'
-                : match.status === 3
+                : match.status === 2
                 ? '比賽已完成'
-                : match.status === 4
+                : match.status === 3
                 ? '比賽已取消'
                 : '暫無可用操作'}
             </p>

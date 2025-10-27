@@ -23,8 +23,8 @@ const config: HardhatUserConfig = {
       chainId: 1337,
     },
     passetHub: {
-      url: process.env.PASSET_HUB_RPC_URL || "https://passet-hub-testnet.polkadot.io",
-      chainId: 1000,
+      url: process.env.PASSET_HUB_RPC_URL || "https://testnet-passet-hub-eth-rpc.polkadot.io",
+      chainId: 420420422,
       accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [],
       gas: 3000000,
       gasPrice: 1000000000,

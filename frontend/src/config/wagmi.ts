@@ -3,26 +3,26 @@ import { injected } from 'wagmi/connectors'
 
 // Passet Hub 測試網配置
 export const passetHub = {
-  id: 1000,
-  name: 'Passet Hub Testnet',
-  network: 'passet-hub',
+  id: 420420422,
+  name: 'Passet Hub TestNet',
+  network: 'passet-hub-testnet',
   nativeCurrency: {
     decimals: 18,
-    name: 'DOT',
-    symbol: 'DOT',
+    name: 'PAS',
+    symbol: 'PAS',
   },
   rpcUrls: {
     default: {
-      http: [import.meta.env.VITE_RPC_URL || 'https://passet-hub-testnet.polkadot.io'],
+      http: [import.meta.env.VITE_RPC_URL || 'https://testnet-passet-hub-eth-rpc.polkadot.io'],
     },
     public: {
-      http: [import.meta.env.VITE_RPC_URL || 'https://passet-hub-testnet.polkadot.io'],
+      http: [import.meta.env.VITE_RPC_URL || 'https://testnet-passet-hub-eth-rpc.polkadot.io'],
     },
   },
   blockExplorers: {
     default: {
       name: 'Passet Hub Explorer',
-      url: import.meta.env.VITE_EXPLORER_URL || 'https://explorer.passet-hub-testnet.polkadot.io',
+      url: import.meta.env.VITE_EXPLORER_URL || 'https://blockscout-passet-hub.parity-testnet.parity.io/',
     },
   },
   testnet: true,

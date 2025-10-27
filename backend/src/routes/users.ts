@@ -1,24 +1,42 @@
 import express from 'express'
+import { ethers } from 'ethers'
+import { getUserMatchesDetailed, getUserStats } from '../services/duelPlatform.js'
 
 const router = express.Router()
+
+const isValidAddress = (address: string) => {
+  try {
+    ethers.getAddress(address)
+    return true
+  } catch {
+    return false
+  }
+}
 
 // GET /api/users/:address/stats - 獲取用戶統計
 router.get('/:address/stats', async (req, res) => {
   try {
     const { address } = req.params
-
-    // TODO: 從區塊鏈或數據庫查詢
-    const stats = {
-      address,
-      totalMatches: 0,
-      wins: 0,
-      losses: 0,
-      winRate: 0,
-      totalStaked: '0',
-      totalWon: '0'
+    if (!isValidAddress(address)) {
+      return res.status(400).json({ error: 'Invalid address' })
     }
 
-    res.json({ data: stats })
+    const stats = await getUserStats(address)
+
+    res.json({
+      data: {
+        address: stats.address,
+        totalMatches: stats.totalMatches,
+        wins: stats.wonMatches,
+        losses: Math.max(stats.totalMatches - stats.wonMatches, 0),
+        winRate:
+          stats.totalMatches > 0
+            ? Number(((stats.wonMatches / stats.totalMatches) * 100).toFixed(1))
+            : 0,
+        totalStakedWei: stats.totalStakedWei,
+        totalWonWei: stats.totalWonWei
+      }
+    })
   } catch (error) {
     console.error('Error fetching user stats:', error)
     res.status(500).json({ error: 'Failed to fetch user stats' })
@@ -31,15 +49,21 @@ router.get('/:address/matches', async (req, res) => {
     const { address } = req.params
     const { limit = '50', offset = '0' } = req.query
 
-    // TODO: 從區塊鏈或數據庫查詢
-    const matches: any[] = []
+    if (!isValidAddress(address)) {
+      return res.status(400).json({ error: 'Invalid address' })
+    }
+
+    const parsedLimit = Math.max(1, Math.min(parseInt(limit as string, 10) || 50, 100))
+    const parsedOffset = Math.max(0, parseInt(offset as string, 10) || 0)
+
+    const { matches, total } = await getUserMatchesDetailed(address, parsedLimit, parsedOffset)
 
     res.json({
       data: matches,
       meta: {
-        total: 0,
-        limit: parseInt(limit as string),
-        offset: parseInt(offset as string)
+        total,
+        limit: parsedLimit,
+        offset: parsedOffset
       }
     })
   } catch (error) {
@@ -48,7 +72,7 @@ router.get('/:address/matches', async (req, res) => {
   }
 })
 
-console.log('👥 Users Routes Loaded - v0.5.0-mvp')
+console.log('👥 Users Routes Loaded - v0.6.0-mvp')
 
 export default router
 

@@ -6,7 +6,7 @@ dotenv.config()
 // Oracle 服務類
 export class OracleService {
   private provider: ethers.JsonRpcProvider
-  private wallet: ethers.Wallet
+  private wallet: ethers.Wallet | ethers.HDNodeWallet
   private contract: ethers.Contract
   private isRunning: boolean = false
 
@@ -21,7 +21,8 @@ export class OracleService {
     if (!privateKey) {
       console.warn('⚠️  Oracle private key not configured')
       // 使用臨時錢包進行開發測試
-      this.wallet = ethers.Wallet.createRandom().connect(this.provider)
+  // createRandom 在 ethers v6 會回傳 HDNodeWallet，因此保留與 Wallet 的聯集型別
+  this.wallet = ethers.Wallet.createRandom().connect(this.provider)
     } else {
       this.wallet = new ethers.Wallet(privateKey, this.provider)
     }
