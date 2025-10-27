@@ -32,6 +32,30 @@ export default function CreateMatch() {
       const startTimestamp = Math.floor(new Date(formData.startTime).getTime() / 1000)
       const endTimestamp = Math.floor(new Date(formData.endTime).getTime() / 1000)
 
+      const now = Math.floor(Date.now() / 1000)
+      if (Number.isNaN(startTimestamp) || Number.isNaN(endTimestamp)) {
+        toast.error('請選擇有效的時間')
+        return
+      }
+      if (startTimestamp <= now) {
+        toast.error('開始時間必須晚於現在')
+        return
+      }
+      if (endTimestamp <= startTimestamp) {
+        toast.error('結束時間必須晚於開始時間')
+        return
+      }
+      const duration = endTimestamp - startTimestamp
+      if (duration < 3600) {
+        toast.error('比賽時長需至少 1 小時')
+        return
+      }
+      const maxDuration = 30 * 24 * 3600
+      if (duration > maxDuration) {
+        toast.error('比賽時長不可超過 30 天')
+        return
+      }
+
       await createMatch(
         Number(formData.mode),
         stakeInWei,
