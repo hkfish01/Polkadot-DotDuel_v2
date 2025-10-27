@@ -1,69 +1,52 @@
 import express from 'express'
+import { getMatchById, getMatchesByIds, listMatches } from '../services/duelPlatform.js'
 
 const router = express.Router()
 
-// GET /api/matches - 獲取所有比賽
+// GET /api/matches - 獲取比賽列表
 router.get('/', async (req, res) => {
   try {
-    const { status, mode, limit = '50', offset = '0' } = req.query
+    const { status, mode, limit = '20', offset = '0', ids } = req.query
 
-    // TODO: 從數據庫或區塊鏈查詢比賽
-    // 暫時返回模擬數據
-    const mockMatches = [
-      {
-        id: 1,
-        creator: '0x1234567890123456789012345678901234567890',
-        participants: [
-          '0x1234567890123456789012345678901234567890',
-          '0x0000000000000000000000000000000000000000'
-        ],
-        stakeAmount: '100000000000000000',
-        status: 0,
-        mode: 0,
-        startTime: Math.floor(Date.now() / 1000) + 3600,
-        endTime: Math.floor(Date.now() / 1000) + 7200,
-        description: 'Pickleball 單打比賽 - 初級組',
-        externalMatchId: '',
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: 2,
-        creator: '0x2345678901234567890123456789012345678901',
-        participants: [
-          '0x2345678901234567890123456789012345678901',
-          '0x3456789012345678901234567890123456789012'
-        ],
-        stakeAmount: '500000000000000000',
-        status: 1,
-        mode: 0,
-        startTime: Math.floor(Date.now() / 1000) - 1800,
-        endTime: Math.floor(Date.now() / 1000) + 1800,
-        description: 'Pickleball 雙打比賽 - 高級組',
-        externalMatchId: '',
-        createdAt: new Date().toISOString()
-      }
-    ]
+    const parsedLimit = Math.max(1, Math.min(parseInt(limit as string, 10) || 20, 100))
+    const parsedOffset = Math.max(0, parseInt(offset as string, 10) || 0)
+    const parsedStatus = typeof status === 'string' ? Number(status) : undefined
+    const parsedMode = typeof mode === 'string' ? Number(mode) : undefined
 
-    // 過濾
-    let filtered = mockMatches
-    if (status !== undefined) {
-      filtered = filtered.filter(m => m.status === parseInt(status as string))
-    }
-    if (mode !== undefined) {
-      filtered = filtered.filter(m => m.mode === parseInt(mode as string))
+    if (typeof ids === 'string' && ids.trim().length > 0) {
+      const requestedIds = ids
+        .split(',')
+        .map((value) => Number(value.trim()))
+        .filter((value) => !Number.isNaN(value) && value >= 0)
+
+      const matches = await getMatchesByIds(requestedIds)
+      const ordered = requestedIds
+        .map((id) => matches.find((match) => match.id === id))
+        .filter((match): match is NonNullable<typeof match> => Boolean(match))
+
+      return res.json({
+        data: ordered,
+        meta: {
+          total: ordered.length,
+          limit: ordered.length,
+          offset: 0
+        }
+      })
     }
 
-    // 分頁
-    const start = parseInt(offset as string)
-    const end = start + parseInt(limit as string)
-    const paginated = filtered.slice(start, end)
+    const { total, matches } = await listMatches({
+      limit: parsedLimit,
+      offset: parsedOffset,
+      status: typeof parsedStatus === 'number' && !Number.isNaN(parsedStatus) ? parsedStatus : undefined,
+      mode: typeof parsedMode === 'number' && !Number.isNaN(parsedMode) ? parsedMode : undefined
+    })
 
     res.json({
-      data: paginated,
+      data: matches,
       meta: {
-        total: filtered.length,
-        limit: parseInt(limit as string),
-        offset: parseInt(offset as string)
+        total,
+        limit: parsedLimit,
+        offset: parsedOffset
       }
     })
   } catch (error) {
@@ -76,53 +59,24 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params
-
-    // TODO: 從數據庫或區塊鏈查詢比賽
-    const mockMatch = {
-      id: parseInt(id),
-      creator: '0x1234567890123456789012345678901234567890',
-      participants: [
-        '0x1234567890123456789012345678901234567890',
-        '0x0000000000000000000000000000000000000000'
-      ],
-      stakeAmount: '100000000000000000',
-      status: 0,
-      mode: 0,
-      startTime: Math.floor(Date.now() / 1000) + 3600,
-      endTime: Math.floor(Date.now() / 1000) + 7200,
-      description: 'Pickleball 單打比賽 - 初級組',
-      externalMatchId: '',
-      winner: '0x0000000000000000000000000000000000000000',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+    const matchId = Number(id)
+    if (Number.isNaN(matchId) || matchId < 0) {
+      return res.status(400).json({ error: 'Invalid match id' })
     }
 
-    res.json({ data: mockMatch })
+    const match = await getMatchById(matchId)
+    if (!match) {
+      return res.status(404).json({ error: 'Match not found' })
+    }
+
+    res.json({ data: match })
   } catch (error) {
     console.error('Error fetching match:', error)
     res.status(500).json({ error: 'Failed to fetch match' })
   }
 })
 
-// POST /api/matches - 創建比賽（webhook from blockchain）
-router.post('/', async (req, res) => {
-  try {
-    const matchData = req.body
-
-    // TODO: 保存到數據庫
-    console.log('New match created:', matchData)
-
-    res.status(201).json({
-      message: 'Match created successfully',
-      data: matchData
-    })
-  } catch (error) {
-    console.error('Error creating match:', error)
-    res.status(500).json({ error: 'Failed to create match' })
-  }
-})
-
-console.log('📋 Matches Routes Loaded - v0.5.0-mvp')
+console.log('📋 Matches Routes Loaded - v0.6.0-mvp')
 
 export default router
 

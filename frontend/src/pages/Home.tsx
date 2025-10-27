@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Trophy, Users, Shield, Zap } from 'lucide-react'
+import { usePlatformStats } from '../hooks/useMatchesApi'
+import { formatEther } from 'ethers'
 
 export default function Home() {
   const features = [
@@ -24,6 +26,11 @@ export default function Home() {
       description: '比賽結束後自動結算，透明分配合約資產',
     },
   ]
+
+  const { data: stats } = usePlatformStats()
+  const totalMatches = stats?.totalMatches ?? 0
+  const totalVolumeDOT = stats ? Number(formatEther(BigInt(stats.totalVolumeWei))) : 0
+  const totalUsers = stats?.totalUsers ?? 0
 
   return (
     <div className="space-y-16">
@@ -90,15 +97,15 @@ export default function Home() {
         <h2 className="text-3xl font-bold text-center mb-12">平台統計</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           <div>
-            <div className="text-4xl md:text-5xl font-bold mb-2">0</div>
+            <div className="text-4xl md:text-5xl font-bold mb-2">{totalMatches}</div>
             <div className="text-pink-100">預測合約數</div>
           </div>
           <div>
-            <div className="text-4xl md:text-5xl font-bold mb-2">0 DOT</div>
+            <div className="text-4xl md:text-5xl font-bold mb-2">{totalVolumeDOT.toFixed(2)} DOT</div>
             <div className="text-pink-100">總合約資產</div>
           </div>
           <div>
-            <div className="text-4xl md:text-5xl font-bold mb-2">0</div>
+            <div className="text-4xl md:text-5xl font-bold mb-2">{totalUsers}</div>
             <div className="text-pink-100">參與用戶</div>
           </div>
         </div>

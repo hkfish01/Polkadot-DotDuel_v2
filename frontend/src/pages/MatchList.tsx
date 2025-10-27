@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useAccount } from 'wagmi'
 import MatchCard from '../components/match/MatchCard'
-import { Filter, RefreshCw, Search } from 'lucide-react'
+import { AlertCircle, Filter, RefreshCw, Search } from 'lucide-react'
+import { MatchApiData, useMatchList } from '../hooks/useMatchesApi'
+import { formatEther } from 'ethers'
 
 export default function MatchList() {
   const { isConnected } = useAccount()
@@ -9,78 +11,75 @@ export default function MatchList() {
   const [filterMode, setFilterMode] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
 
-  // 讀取總比賽數（通過事件或其他方式，這裡簡化處理）
-  // 實際上需要後端API或者遍歷matchId
-  // 暫時使用模擬數據
-  // 這裡需要一個批量查詢比賽的方法
-  // 由於合約沒有提供getAllMatches，我們需要逐個查詢
-  // 或者等待後端API實現
-  
-  // 模擬數據（實際開發中需要從合約或API獲取）
-  const mockMatches = [
-    {
-      id: 1,
-      creator: '0x1234567890123456789012345678901234567890',
-      participants: [
-        '0x1234567890123456789012345678901234567890',
-        '0x0000000000000000000000000000000000000000'
-      ],
-      stakeAmount: BigInt('100000000000000000'), // 0.1 DOT
-      status: 0, // WAITING
-      mode: 0,
-      startTime: Math.floor(Date.now() / 1000) + 3600,
-      endTime: Math.floor(Date.now() / 1000) + 7200,
-      description: 'Pickleball 單打比賽 - 初級組',
-    },
-    {
-      id: 2,
-      creator: '0x2345678901234567890123456789012345678901',
-      participants: [
-        '0x2345678901234567890123456789012345678901',
-        '0x3456789012345678901234567890123456789012'
-      ],
-      stakeAmount: BigInt('500000000000000000'), // 0.5 DOT
-      status: 1, // IN_PROGRESS
-      mode: 0,
-      startTime: Math.floor(Date.now() / 1000) - 1800,
-      endTime: Math.floor(Date.now() / 1000) + 1800,
-      description: 'Pickleball 雙打比賽 - 高級組',
-    },
-    {
-      id: 3,
-      creator: '0x3456789012345678901234567890123456789012',
-      participants: [
-        '0x3456789012345678901234567890123456789012',
-        '0x4567890123456789012345678901234567890123'
-      ],
-      stakeAmount: BigInt('1000000000000000000'), // 1 DOT
-      status: 3, // COMPLETED
-      mode: 1,
-      startTime: Math.floor(Date.now() / 1000) - 7200,
-      endTime: Math.floor(Date.now() / 1000) - 3600,
-      description: 'Pickleball 混雙比賽 - API自動判定',
-    },
-  ]
+  const {
+    data,
+    isLoading,
+    isRefetching,
+    error,
+    refetch,
+  } = useMatchList({ limit: 100 })
 
-  // 過濾邏輯
-  const filteredMatches = mockMatches.filter(match => {
-    // 狀態過濾
-    if (filterStatus !== 'all' && match.status !== parseInt(filterStatus)) {
-      return false
+  const matches: MatchApiData[] = data?.matches ?? []
+
+  const stats = useMemo(() => {
+    const summary = {
+      total: data?.meta?.total ?? matches.length,
+      waiting: 0,
+      inProgress: 0,
+      completed: 0,
+      cancelled: 0,
+      volume: 0n,
     }
-    
-    // 模式過濾
-    if (filterMode !== 'all' && match.mode !== parseInt(filterMode)) {
-      return false
+
+    for (const match of matches) {
+      summary.volume += BigInt(match.stakeAmountWei ?? '0')
+
+      switch (match.status) {
+        case 0:
+          summary.waiting += 1
+          break
+        case 1:
+          summary.inProgress += 1
+          break
+        case 2:
+          summary.completed += 1
+          break
+        case 3:
+          summary.cancelled += 1
+          break
+        default:
+          break
+      }
     }
-    
-    // 搜索過濾
-    if (searchQuery && !match.description.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false
+
+    return summary
+  }, [matches, data?.meta?.total])
+
+  const filteredMatches = useMemo(() => {
+    return matches.filter(match => {
+      if (filterStatus !== 'all' && match.status !== parseInt(filterStatus)) {
+        return false
+      }
+
+      if (filterMode !== 'all' && match.mode !== parseInt(filterMode)) {
+        return false
+      }
+
+      if (searchQuery && !match.description.toLowerCase().includes(searchQuery.toLowerCase())) {
+        return false
+      }
+
+      return true
+    })
+  }, [matches, filterStatus, filterMode, searchQuery])
+
+  const totalVolumeDisplay = useMemo(() => {
+    if (stats.volume === 0n) {
+      return '0'
     }
-    
-    return true
-  })
+
+    return Number.parseFloat(formatEther(stats.volume)).toFixed(2)
+  }, [stats.volume])
 
   return (
     <div>
@@ -92,6 +91,13 @@ export default function MatchList() {
         <p className="text-gray-600 dark:text-gray-400">
           瀏覽所有公開比賽，選擇感興趣的比賽加入
         </p>
+        <button
+          onClick={() => refetch()}
+          className="mt-4 inline-flex items-center gap-2 px-4 py-2 text-sm text-pink-600 dark:text-pink-400 border border-pink-500 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/30 transition-colors"
+        >
+          <RefreshCw size={16} className={isRefetching ? 'animate-spin' : ''} />
+          {isRefetching ? '更新中...' : '重新整理'}
+        </button>
       </div>
 
       {/* Filters */}
@@ -134,9 +140,8 @@ export default function MatchList() {
               <option value="all">所有狀態</option>
               <option value="0">等待中</option>
               <option value="1">進行中</option>
-              <option value="2">等待結果</option>
-              <option value="3">已完成</option>
-              <option value="4">已取消</option>
+              <option value="2">已完成</option>
+              <option value="3">已取消</option>
             </select>
           </div>
 
@@ -177,24 +182,53 @@ export default function MatchList() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">總比賽數</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{mockMatches.length}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">等待中</p>
-          <p className="text-2xl font-bold text-yellow-600">{mockMatches.filter(m => m.status === 0).length}</p>
+          <p className="text-2xl font-bold text-yellow-600">{stats.waiting}</p>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">進行中</p>
-          <p className="text-2xl font-bold text-blue-600">{mockMatches.filter(m => m.status === 1).length}</p>
+          <p className="text-2xl font-bold text-blue-600">{stats.inProgress}</p>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">已完成</p>
-          <p className="text-2xl font-bold text-green-600">{mockMatches.filter(m => m.status === 3).length}</p>
+          <p className="text-2xl font-bold text-green-600">{stats.completed}</p>
+          {stats.cancelled > 0 && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              已取消 {stats.cancelled} 場
+            </p>
+          )}
         </div>
       </div>
 
+      <div className="mb-6 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-blue-500/10 dark:from-pink-500/20 dark:via-purple-500/20 dark:to-blue-500/20 border border-pink-500/30 dark:border-pink-500/40 rounded-xl p-4">
+        <p className="text-sm text-pink-700 dark:text-pink-300 mb-1">累積押注量</p>
+        <p className="text-2xl font-semibold text-pink-600 dark:text-pink-200">{totalVolumeDisplay} DOT</p>
+      </div>
+
+      {error && (
+        <div className="mb-6 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/40 rounded-xl p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" />
+          <div>
+            <p className="text-sm font-semibold text-red-600 dark:text-red-300 mb-1">
+              載入比賽資料時發生錯誤
+            </p>
+            <p className="text-sm text-red-600/80 dark:text-red-200">
+              {error instanceof Error ? error.message : '請稍後再試。'}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Match List */}
-      {filteredMatches.length === 0 ? (
+      {isLoading ? (
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">載入中...</p>
+        </div>
+      ) : filteredMatches.length === 0 ? (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
           <div className="text-gray-400 mb-4">
             <Filter size={48} className="mx-auto" />
@@ -210,6 +244,7 @@ export default function MatchList() {
               setFilterStatus('all')
               setFilterMode('all')
               setSearchQuery('')
+              refetch()
             }}
             className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-medium hover:from-pink-600 hover:to-purple-700 transition-all"
           >
@@ -219,7 +254,20 @@ export default function MatchList() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredMatches.map(match => (
-            <MatchCard key={match.id} match={match} />
+            <MatchCard
+              key={match.id}
+              match={{
+                id: match.id,
+                creator: match.creator,
+                participants: match.participants,
+                stakeAmount: BigInt(match.stakeAmountWei ?? '0'),
+                status: match.status,
+                mode: match.mode,
+                startTime: match.startTime,
+                endTime: match.endTime,
+                description: match.description,
+              }}
+            />
           ))}
         </div>
       )}

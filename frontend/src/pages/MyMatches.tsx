@@ -1,13 +1,68 @@
+import { useMemo } from 'react'
 import { useAccount } from 'wagmi'
-import { useUserMatches, useUserStats } from '../hooks/useContract'
+import { MatchApiData, useUserMatchesApi, useUserStatsApi } from '../hooks/useMatchesApi'
 import MatchCard from '../components/match/MatchCard'
-import { Trophy, Target, Award, TrendingUp, Wallet } from 'lucide-react'
+import { Trophy, Target, Award, TrendingUp, Wallet, RefreshCw, AlertCircle } from 'lucide-react'
 import { formatEther } from 'ethers'
+
+type NormalizedMatch = {
+  id: number
+  creator: string
+  participants: string[]
+  stakeAmount: bigint
+  status: number
+  mode: number
+  startTime: number
+  endTime: number
+  description: string
+}
 
 export default function MyMatches() {
   const { address, isConnected } = useAccount()
-  const { matches: userMatches, isLoading: matchesLoading } = useUserMatches(address)
-  const { stats, isLoading: statsLoading } = useUserStats(address)
+  const {
+    data: matches,
+    isLoading: matchesLoading,
+    isRefetching: matchesRefetching,
+    error: matchesError,
+    refetch: refetchMatches,
+  } = useUserMatchesApi(address)
+  const {
+    data: stats,
+    isLoading: statsLoading,
+    isRefetching: statsRefetching,
+    error: statsError,
+    refetch: refetchStats,
+  } = useUserStatsApi(address)
+
+  const isRefreshing = matchesRefetching || statsRefetching
+
+  const totalMatches = stats?.totalMatches ?? 0
+  const wins = stats?.wins ?? 0
+  const losses = stats?.losses ?? 0
+  const winRateValue: number = stats?.winRate ?? 0
+  const winRateDisplay = `${winRateValue.toFixed(1)}%`
+  const totalStakedWei = BigInt(stats?.totalStakedWei ?? '0')
+  const totalWonWei = BigInt(stats?.totalWonWei ?? '0')
+
+  const normalizedMatches = useMemo<NormalizedMatch[]>(() => {
+    if (!matches) return []
+    return matches.map((match: MatchApiData) => ({
+      id: match.id,
+      creator: match.creator,
+      participants: match.participants,
+      stakeAmount: BigInt(match.stakeAmountWei ?? '0'),
+      status: match.status,
+      mode: match.mode,
+      startTime: match.startTime,
+      endTime: match.endTime,
+      description: match.description,
+    }))
+  }, [matches])
+
+  const handleRefresh = () => {
+    void refetchStats()
+    void refetchMatches()
+  }
 
   if (!isConnected) {
     return (
@@ -25,62 +80,52 @@ export default function MyMatches() {
     )
   }
 
-  // 解析統計數據
-  const totalMatches = Number(stats?.totalMatches ?? 0n)
-  const wins = Number(stats?.wonMatches ?? 0n)
-  const losses = Math.max(totalMatches - wins, 0)
-  const winRate = totalMatches > 0 ? ((wins / totalMatches) * 100).toFixed(1) : '0.0'
-  const totalStaked = stats?.totalStaked ?? 0n
-  const totalWon = stats?.totalWon ?? 0n
-
-  const onchainMatchIds = userMatches ? userMatches.map(Number) : []
-
-  // 解析比賽列表（需要根據實際返回的數據結構調整）
-  // 這裡需要逐個查詢每個比賽的詳情
-  // 在實際應用中，應該由後端API提供完整的比賽列表
-  // 暫時使用模擬數據
-  const mockMatches = [
-    {
-      id: 1,
-      creator: address || '',
-      participants: [
-        address || '',
-        '0x0000000000000000000000000000000000000000'
-      ],
-      stakeAmount: BigInt('100000000000000000'),
-      status: 0,
-      mode: 0,
-      startTime: Math.floor(Date.now() / 1000) + 3600,
-      endTime: Math.floor(Date.now() / 1000) + 7200,
-      description: '我創建的比賽 - 等待對手',
-    },
-    {
-      id: 2,
-      creator: '0x2345678901234567890123456789012345678901',
-      participants: [
-        '0x2345678901234567890123456789012345678901',
-        address || ''
-      ],
-      stakeAmount: BigInt('500000000000000000'),
-      status: 1,
-      mode: 0,
-      startTime: Math.floor(Date.now() / 1000) - 1800,
-      endTime: Math.floor(Date.now() / 1000) + 1800,
-      description: '我參與的比賽 - 進行中',
-    },
+  const showMatchesSpinner = matchesLoading && normalizedMatches.length === 0
+  const hasErrors = Boolean(matchesError || statsError)
+  const errorText = [
+    matchesError instanceof Error ? matchesError.message : null,
+    statsError instanceof Error ? statsError.message : null,
   ]
+    .filter(Boolean)
+    .join('；')
 
   return (
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          我的比賽
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          查看你參與的所有比賽和統計數據
-        </p>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              我的比賽
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              查看你參與的所有比賽和統計數據
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleRefresh}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm text-pink-600 dark:text-pink-300 border border-pink-500/60 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/30 transition-colors"
+          >
+            <RefreshCw size={16} className={isRefreshing ? 'animate-spin' : ''} />
+            {isRefreshing ? '更新中...' : '重新整理'}
+          </button>
+        </div>
       </div>
+
+      {hasErrors && (
+        <div className="mb-6 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/40 rounded-xl p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" />
+          <div>
+            <p className="text-sm font-semibold text-red-600 dark:text-red-300 mb-1">
+              資料載入時發生錯誤
+            </p>
+            <p className="text-sm text-red-600/80 dark:text-red-200">
+              {errorText || '請稍後再試。'}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -95,11 +140,11 @@ export default function MyMatches() {
             總比賽數
           </p>
           <p className="text-3xl font-bold text-gray-900 dark:text-white">
-            {statsLoading ? '...' : totalMatches}
+            {statsLoading && !stats ? '...' : totalMatches}
           </p>
           {!statsLoading && (
             <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
-              累計押注 {formatEther(totalStaked)} DOT
+              累計押注 {formatEther(totalStakedWei)} DOT
             </p>
           )}
         </div>
@@ -113,7 +158,7 @@ export default function MyMatches() {
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">勝場</p>
           <p className="text-3xl font-bold text-green-600">
-            {statsLoading ? '...' : wins}
+            {statsLoading && !stats ? '...' : wins}
           </p>
         </div>
 
@@ -126,7 +171,7 @@ export default function MyMatches() {
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">敗場</p>
           <p className="text-3xl font-bold text-red-600">
-            {statsLoading ? '...' : losses}
+            {statsLoading && !stats ? '...' : losses}
           </p>
         </div>
 
@@ -139,11 +184,11 @@ export default function MyMatches() {
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">勝率</p>
           <p className="text-3xl font-bold text-purple-600">
-            {statsLoading ? '...' : `${winRate}%`}
+            {statsLoading && !stats ? '...' : winRateDisplay}
           </p>
           {!statsLoading && (
             <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
-              總獲得 {formatEther(totalWon)} DOT
+              總獲得 {formatEther(totalWonWei)} DOT
             </p>
           )}
         </div>
@@ -155,18 +200,12 @@ export default function MyMatches() {
           比賽記錄
         </h2>
 
-        {onchainMatchIds.length > 0 && (
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-            已載入 {onchainMatchIds.length} 筆鏈上比賽 ID（等待詳情 API 整合）
-          </p>
-        )}
-
-        {matchesLoading ? (
+        {showMatchesSpinner ? (
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
             <div className="animate-spin w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full mx-auto mb-4"></div>
             <p className="text-gray-600 dark:text-gray-400">載入中...</p>
           </div>
-        ) : mockMatches.length === 0 ? (
+        ) : normalizedMatches.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
             <Trophy className="w-16 h-16 mx-auto mb-4 text-gray-400" />
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -192,7 +231,7 @@ export default function MyMatches() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockMatches.map((match) => (
+            {normalizedMatches.map((match: NormalizedMatch) => (
               <MatchCard key={match.id} match={match} />
             ))}
           </div>

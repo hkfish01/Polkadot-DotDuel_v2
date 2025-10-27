@@ -1,37 +1,27 @@
 import express from 'express'
+import { ethers } from 'ethers'
+import { getPlatformStats } from '../services/duelPlatform.js'
 
 const router = express.Router()
 
 // GET /api/stats/platform - 獲取平台統計
 router.get('/platform', async (req, res) => {
   try {
-    // TODO: 從數據庫查詢真實數據
-    const stats = {
-      totalMatches: 156,
-      activeMatches: 12,
-      completedMatches: 132,
-      cancelledMatches: 12,
-      totalUsers: 48,
-      totalVolume: '234.5',
-      topPlayers: [
-        {
-          address: '0x1234567890123456789012345678901234567890',
-          wins: 15,
-          losses: 3,
-          winRate: 83.3,
-          totalVolume: '45.2'
-        },
-        {
-          address: '0x2345678901234567890123456789012345678901',
-          wins: 12,
-          losses: 4,
-          winRate: 75.0,
-          totalVolume: '38.5'
-        }
-      ]
-    }
+    const stats = await getPlatformStats()
 
-    res.json({ data: stats })
+    res.json({
+      data: {
+        totalMatches: stats.totalMatches,
+        waitingMatches: stats.waitingMatches,
+        activeMatches: stats.activeMatches,
+        completedMatches: stats.completedMatches,
+        cancelledMatches: stats.cancelledMatches,
+        totalUsers: stats.totalUsers,
+        totalVolumeWei: stats.totalVolumeWei,
+        topPlayers: stats.topPlayers,
+        recentMatches: stats.recentMatches
+      }
+    })
   } catch (error) {
     console.error('Error fetching platform stats:', error)
     res.status(500).json({ error: 'Failed to fetch platform stats' })
@@ -42,27 +32,27 @@ router.get('/platform', async (req, res) => {
 router.get('/recent', async (req, res) => {
   try {
     const { limit = '10' } = req.query
+    const parsedLimit = Math.max(1, Math.min(parseInt(limit as string, 10) || 10, 50))
 
-    // TODO: 從數據庫查詢
-    const recentMatches = [
-      {
-        id: 1,
-        description: 'Pickleball 單打',
-        stakeAmount: '500000000000000000',
-        status: 3,
-        winner: '0x1234567890123456789012345678901234567890',
-        completedAt: new Date().toISOString()
-      }
-    ]
+    const stats = await getPlatformStats()
+    const recent = stats.recentMatches.slice(0, parsedLimit).map((match) => ({
+      id: match.id,
+      description: match.description,
+      stakeAmountWei: match.stakeAmountWei,
+      status: match.status,
+      winner: match.winner,
+      updatedAt: match.updatedAt,
+      stakeAmountDOT: Number(ethers.formatEther(match.stakeAmountWei)).toFixed(3)
+    }))
 
-    res.json({ data: recentMatches })
+    res.json({ data: recent })
   } catch (error) {
     console.error('Error fetching recent matches:', error)
     res.status(500).json({ error: 'Failed to fetch recent matches' })
   }
 })
 
-console.log('📊 Stats Routes Loaded - v0.5.0-mvp')
+console.log('📊 Stats Routes Loaded - v0.6.0-mvp')
 
 export default router
 
