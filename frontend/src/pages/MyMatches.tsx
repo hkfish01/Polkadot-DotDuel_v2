@@ -2,10 +2,11 @@ import { useAccount } from 'wagmi'
 import { useUserMatches, useUserStats } from '../hooks/useContract'
 import MatchCard from '../components/match/MatchCard'
 import { Trophy, Target, Award, TrendingUp, Wallet } from 'lucide-react'
+import { formatEther } from 'ethers'
 
 export default function MyMatches() {
   const { address, isConnected } = useAccount()
-  const { matches, isLoading: matchesLoading } = useUserMatches(address)
+  const { matches: userMatches, isLoading: matchesLoading } = useUserMatches(address)
   const { stats, isLoading: statsLoading } = useUserStats(address)
 
   if (!isConnected) {
@@ -25,14 +26,16 @@ export default function MyMatches() {
   }
 
   // 解析統計數據
-  const totalMatches = stats ? Number(stats[0]) : 0
-  const wins = stats ? Number(stats[1]) : 0
-  const losses = stats ? Number(stats[2]) : 0
+  const totalMatches = Number(stats?.totalMatches ?? 0n)
+  const wins = Number(stats?.wonMatches ?? 0n)
+  const losses = Math.max(totalMatches - wins, 0)
   const winRate = totalMatches > 0 ? ((wins / totalMatches) * 100).toFixed(1) : '0.0'
+  const totalStaked = stats?.totalStaked ?? 0n
+  const totalWon = stats?.totalWon ?? 0n
+
+  const onchainMatchIds = userMatches ? userMatches.map(Number) : []
 
   // 解析比賽列表（需要根據實際返回的數據結構調整）
-  const matchIds = matches ? (Array.isArray(matches) ? matches : []) : []
-
   // 這裡需要逐個查詢每個比賽的詳情
   // 在實際應用中，應該由後端API提供完整的比賽列表
   // 暫時使用模擬數據
@@ -94,6 +97,11 @@ export default function MyMatches() {
           <p className="text-3xl font-bold text-gray-900 dark:text-white">
             {statsLoading ? '...' : totalMatches}
           </p>
+          {!statsLoading && (
+            <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
+              累計押注 {formatEther(totalStaked)} DOT
+            </p>
+          )}
         </div>
 
         {/* Wins */}
@@ -133,6 +141,11 @@ export default function MyMatches() {
           <p className="text-3xl font-bold text-purple-600">
             {statsLoading ? '...' : `${winRate}%`}
           </p>
+          {!statsLoading && (
+            <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
+              總獲得 {formatEther(totalWon)} DOT
+            </p>
+          )}
         </div>
       </div>
 
@@ -141,6 +154,12 @@ export default function MyMatches() {
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
           比賽記錄
         </h2>
+
+        {onchainMatchIds.length > 0 && (
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            已載入 {onchainMatchIds.length} 筆鏈上比賽 ID（等待詳情 API 整合）
+          </p>
+        )}
 
         {matchesLoading ? (
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">

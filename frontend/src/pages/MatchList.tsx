@@ -1,7 +1,5 @@
 import { useState } from 'react'
-import { useAccount, useReadContract } from 'wagmi'
-import { CONTRACT_ADDRESS } from '../config/wagmi'
-import DuelPlatformABI from '../contracts/DuelPlatform.json'
+import { useAccount } from 'wagmi'
 import MatchCard from '../components/match/MatchCard'
 import { Filter, RefreshCw, Search } from 'lucide-react'
 
@@ -14,12 +12,6 @@ export default function MatchList() {
   // 讀取總比賽數（通過事件或其他方式，這裡簡化處理）
   // 實際上需要後端API或者遍歷matchId
   // 暫時使用模擬數據
-  const { data: matchCount } = useReadContract({
-    address: CONTRACT_ADDRESS,
-    abi: DuelPlatformABI.abi,
-    functionName: 'nextMatchId',
-  }) as { data: bigint | undefined }
-
   // 這裡需要一個批量查詢比賽的方法
   // 由於合約沒有提供getAllMatches，我們需要逐個查詢
   // 或者等待後端API實現

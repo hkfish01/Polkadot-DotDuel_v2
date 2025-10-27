@@ -6,7 +6,7 @@ import toast from 'react-hot-toast'
 import { Loader2, Trophy, Calendar, DollarSign, FileText } from 'lucide-react'
 
 export default function CreateMatch() {
-  const { address, isConnected } = useAccount()
+  const { isConnected } = useAccount()
   const { createMatch, isPending, isConfirming, isConfirmed } = useContract()
 
   const [formData, setFormData] = useState({
