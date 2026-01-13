@@ -1,101 +1,117 @@
-# DotDuel - Polkadot 預測協議平台 - 黑客松 MVP
+# DotDuel - Decentralized Duel Prediction Platform
 
-> 基於 Polkadot REVM 的去中心化點對點預測協議 - Hackathon MVP
+> Decentralized 1v1 prediction platform built on **Mantle Network**
 
-## 🎯 項目簡介
+## 🎯 Project Overview
 
-**DotDuel** 是一個構建在 Polkadot 生態系統上的去中心化點對點預測協議。它專為像匹克球錦標賽這樣的體育賽事設計，允許兩位用戶就特定的比賽結果創建並參與預測合約。
+**DotDuel** is a decentralized peer-to-peer prediction protocol designed for 1v1 duels and sports events (e.g., pickleball tournaments). Two users can create and participate in prediction contracts on specific match outcomes.
 
-### 核心特點
+### Key Features
 
-- 🎯 **預測合約**: 用戶可以發起預測合約，表達對比賽結果的判斷
-- 🔒 **透明公正**: 整個過程完全由智能合約代碼保障，透明且無需信任
-- 💎 **DOT 抵押**: 使用 DOT 代幣作為預測立場的抵押
-- ⚡ **自動結算**: 智能合約自動執行合約結算，公平分配合約資產
-- 📊 **數據透明**: 所有預測記錄和結算結果鏈上可查
+- 🎯 **Prediction Contracts**: Users can initiate prediction contracts expressing their judgment on match outcomes
+- 🔒 **Transparent & Trustless**: The entire process is secured by smart contract code
+- 💎 **MNT Staking**: Uses MNT tokens as collateral for predictions
+- ⚡ **Automatic Settlement**: Smart contracts automatically execute settlement and fairly distribute assets
+- 📊 **On-chain Transparency**: All prediction records and settlement results are verifiable on-chain
 
-我們的目標是將體育粉絲的熱情和知識，轉化為一種安全、有趣的互動體驗，同時展示 Polkadot 智能合約在自動化、可信結算方面的強大能力。
+### Blockchain
+- **Mantle Mainnet**: Chain ID 5000, RPC `https://rpc.mantle.xyz`
+- **Mantle Sepolia Testnet**: Chain ID 5003, RPC `https://rpc.sepolia.mantle.xyz`
+- Explorer: [mantlescan.xyz](https://mantlescan.xyz) / [sepolia.mantlescan.xyz](https://sepolia.mantlescan.xyz)
 
-### 核心特點
-- ✅ 智能合約自動執行，無需中間人
-- ✅ 雙模式系統（裁判模式和 API 自動模式）
-- ✅ DOT 代幣支付
-- ✅ 自動結算獎金
-- ✅ 完整的用戶統計
+## 🚀 Quick Start
 
-## 🚀 快速開始
-
-### 前置要求
+### Prerequisites
 - Node.js 18+
-- npm 或 yarn
+- npm or yarn
+- MetaMask with Mantle network configured
 
-### 安裝和運行
+### Installation and Setup
 
-#### 1. 智能合約測試
+#### 1. Clone and Install
 ```bash
-cd hackathon/contracts
-npm install
-npm test
+git clone https://github.com/hkfish01/Polkadot-DotDuel_v2.git
+cd Polkadot-DotDuel_v2
 ```
 
-**測試結果**:
-```
-✅ 14 passing (698ms)
-✅ 0 failing
-✅ 100% 通過率
-```
-
-#### 2. 前端開發
+#### 2. Smart Contract Deployment
 ```bash
-cd hackathon/frontend
+cd contracts
 npm install
+cp .env.example .env
+# Edit .env with your DEPLOYER_PRIVATE_KEY
+
+# Deploy to Mantle Sepolia Testnet
+npx hardhat run scripts/deploy.ts --network mantleSepolia
+
+# Or deploy to Mantle Mainnet
+npx hardhat run scripts/deploy.ts --network mantle
+```
+
+#### 3. Contract Verification (Optional)
+```bash
+npx hardhat verify --network mantleSepolia <CONTRACT_ADDRESS> <PLATFORM_WALLET> <ORACLE_ADDRESS>
+```
+
+#### 4. Backend Setup
+```bash
+cd ../backend
+npm install
+cp .env.example .env
+# Edit .env with CONTRACT_ADDRESS and RPC_URL
 npm run dev
 ```
 
-**啟動結果**:
-```
-✅ VITE v5.4.21  ready in 328 ms
-✅ Local:   http://localhost:5173/
+#### 5. Frontend Setup
+```bash
+cd ../frontend
+npm install
+cp .env.example .env
+# Edit .env with VITE_CONTRACT_ADDRESS
+npm run dev
 ```
 
-## 📁 項目結構
+## 📁 Project Structure
 
 ```
-hackathon/
-├── contracts/          ✅ 智能合約（已完成）
+DotDuel/
+├── contracts/          ✅ Smart Contracts
 │   ├── contracts/
-│   │   └── DuelPlatform.sol (462行)
+│   │   └── DuelPlatform.sol
 │   ├── scripts/
 │   │   └── deploy.ts
 │   ├── test/
-│   │   └── DuelPlatform.test.ts (14測試)
-│   └── package.json
-├── frontend/           ✅ 前端基礎（60%）
+│   │   └── DuelPlatform.test.ts
+│   └── hardhat.config.ts
+├── frontend/           ✅ React Frontend
 │   ├── src/
 │   │   ├── components/
 │   │   ├── pages/
-│   │   ├── App.tsx
-│   │   └── main.tsx
+│   │   ├── config/wagmi.ts
+│   │   └── App.tsx
 │   └── package.json
-├── backend/            ⏳ 後端（待開發）
+├── backend/            ✅ Node.js Backend
 │   └── src/
-├── docs/               ✅ 文檔（完整）
-│   ├── 20251027-01/    # Day 1
-│   └── 20251027-02/    # Day 2
-├── README.md
-├── CHANGELOG.md
-└── VERSION
+│       ├── routes/
+│       └── services/
+├── docs/               📚 Documentation
+│   └── presentation/
+└── README.md
 ```
 
-## 🛠️ 技術棧
+## 🛠️ Tech Stack
 
-### 智能合約
+### Smart Contract
 - Solidity 0.8.20
 - Hardhat
 - OpenZeppelin
 - ethers.js v6
 
-### 前端
+### Blockchain
+- Mantle Network (EVM-compatible L2)
+- MNT native token
+
+### Frontend
 - React 18
 - TypeScript
 - Vite

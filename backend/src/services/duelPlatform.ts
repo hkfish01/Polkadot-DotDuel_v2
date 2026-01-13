@@ -3,7 +3,8 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-const RPC_URL = process.env.RPC_URL || 'https://testnet-passet-hub-eth-rpc.polkadot.io'
+// Default to Mantle Sepolia Testnet
+const RPC_URL = process.env.RPC_URL || 'https://rpc.sepolia.mantle.xyz'
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS
 
 if (!CONTRACT_ADDRESS || CONTRACT_ADDRESS === ethers.ZeroAddress) {

@@ -1,48 +1,81 @@
 import { http, createConfig } from 'wagmi'
 import { injected } from 'wagmi/connectors'
 
-// Passet Hub 測試網配置
-export const passetHub = {
-  id: 420420422,
-  name: 'Passet Hub TestNet',
-  network: 'passet-hub-testnet',
+// Mantle Mainnet 配置
+export const mantleMainnet = {
+  id: 5000,
+  name: 'Mantle',
+  network: 'mantle',
   nativeCurrency: {
     decimals: 18,
-    name: 'PAS',
-    symbol: 'PAS',
+    name: 'MNT',
+    symbol: 'MNT',
   },
   rpcUrls: {
     default: {
-      http: [import.meta.env.VITE_RPC_URL || 'https://testnet-passet-hub-eth-rpc.polkadot.io'],
+      http: [import.meta.env.VITE_RPC_URL || 'https://rpc.mantle.xyz'],
     },
     public: {
-      http: [import.meta.env.VITE_RPC_URL || 'https://testnet-passet-hub-eth-rpc.polkadot.io'],
+      http: ['https://rpc.mantle.xyz'],
     },
   },
   blockExplorers: {
     default: {
-      name: 'Passet Hub Explorer',
-      url: import.meta.env.VITE_EXPLORER_URL || 'https://blockscout-passet-hub.parity-testnet.parity.io/',
+      name: 'Mantle Explorer',
+      url: 'https://mantlescan.xyz',
+    },
+  },
+  testnet: false,
+}
+
+// Mantle Sepolia Testnet 配置
+export const mantleSepolia = {
+  id: 5003,
+  name: 'Mantle Sepolia Testnet',
+  network: 'mantle-sepolia',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'MNT',
+    symbol: 'MNT',
+  },
+  rpcUrls: {
+    default: {
+      http: [import.meta.env.VITE_RPC_URL || 'https://rpc.sepolia.mantle.xyz'],
+    },
+    public: {
+      http: ['https://rpc.sepolia.mantle.xyz'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Mantle Sepolia Explorer',
+      url: 'https://sepolia.mantlescan.xyz',
     },
   },
   testnet: true,
 }
 
+// 選擇當前使用的網路（根據環境變數）
+const useTestnet = import.meta.env.VITE_USE_TESTNET === 'true'
+export const currentChain = useTestnet ? mantleSepolia : mantleMainnet
+
 // Wagmi 配置
 export const config = createConfig({
-  chains: [passetHub as any],
+  chains: [currentChain as any],
   connectors: [
     injected({ target: 'metaMask' }),
   ],
   transports: {
-    [passetHub.id]: http(),
+    [mantleMainnet.id]: http(),
+    [mantleSepolia.id]: http(),
   },
 })
 
 // 合約地址
 export const CONTRACT_ADDRESS = import.meta.env.VITE_CONTRACT_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000'
 
-console.log('📋 Wagmi Config Loaded - v0.2.0-mvp')
+console.log('📋 Wagmi Config Loaded - v0.3.0-mantle')
 console.log('🔗 Contract Address:', CONTRACT_ADDRESS)
-console.log('🌐 RPC URL:', passetHub.rpcUrls.default.http[0])
+console.log('🌐 Network:', currentChain.name)
+console.log('🌐 RPC URL:', currentChain.rpcUrls.default.http[0])
 

@@ -13,7 +13,7 @@ export class OracleService {
   constructor() {
     // 初始化 provider
     this.provider = new ethers.JsonRpcProvider(
-      process.env.RPC_URL || 'https://passet-hub-testnet.polkadot.io'
+      process.env.RPC_URL || 'https://rpc.sepolia.mantle.xyz'
     )
 
     // 初始化 wallet（需要私鑰）
@@ -177,7 +177,7 @@ export class OracleService {
       isRunning: this.isRunning,
       oracleAddress: this.wallet.address,
       contractAddress: this.contract.target,
-      network: process.env.RPC_URL || 'https://passet-hub-testnet.polkadot.io'
+      network: process.env.RPC_URL || 'https://rpc.sepolia.mantle.xyz'
     }
   }
 }

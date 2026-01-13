@@ -22,6 +22,19 @@ const config: HardhatUserConfig = {
       url: "http://127.0.0.1:8545",
       chainId: 1337,
     },
+    // Mantle Mainnet
+    mantle: {
+      url: process.env.MANTLE_RPC_URL || "https://rpc.mantle.xyz",
+      chainId: 5000,
+      accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [],
+    },
+    // Mantle Sepolia Testnet
+    mantleSepolia: {
+      url: process.env.MANTLE_SEPOLIA_RPC_URL || "https://rpc.sepolia.mantle.xyz",
+      chainId: 5003,
+      accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [],
+    },
+    // Legacy: Passet Hub (keep for reference)
     passetHub: {
       url: process.env.PASSET_HUB_RPC_URL || "https://testnet-passet-hub-eth-rpc.polkadot.io",
       chainId: 420420422,
@@ -29,6 +42,30 @@ const config: HardhatUserConfig = {
       gas: 3000000,
       gasPrice: 1000000000,
     },
+  },
+  etherscan: {
+    apiKey: {
+      mantle: process.env.MANTLE_EXPLORER_API_KEY || "xyz", // Mantle Explorer uses a placeholder
+      mantleSepolia: process.env.MANTLE_EXPLORER_API_KEY || "xyz",
+    },
+    customChains: [
+      {
+        network: "mantle",
+        chainId: 5000,
+        urls: {
+          apiURL: "https://api.mantlescan.xyz/api",
+          browserURL: "https://mantlescan.xyz",
+        },
+      },
+      {
+        network: "mantleSepolia",
+        chainId: 5003,
+        urls: {
+          apiURL: "https://api-sepolia.mantlescan.xyz/api",
+          browserURL: "https://sepolia.mantlescan.xyz",
+        },
+      },
+    ],
   },
   paths: {
     sources: "./contracts",

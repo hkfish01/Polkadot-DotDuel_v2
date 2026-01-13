@@ -4,11 +4,33 @@ async function main() {
   console.log("🚀 開始部署 DuelPlatform 合約...");
   console.log("📋 版本: v0.1.0-mvp\n");
 
+  // 檢查私鑰
+  if (!process.env.DEPLOYER_PRIVATE_KEY) {
+    console.error("❌ 錯誤：DEPLOYER_PRIVATE_KEY 未設定");
+    console.error("請在 .env 中設定 DEPLOYER_PRIVATE_KEY（不包含 0x 前綴）");
+    process.exit(1);
+  }
+
   const [deployer] = await ethers.getSigners();
+  
+  if (!deployer) {
+    console.error("❌ 錯誤：無法取得簽名者（signer）");
+    console.error("請確認 DEPLOYER_PRIVATE_KEY 有效且網路連線正常");
+    process.exit(1);
+  }
+  
   console.log("👤 部署賬戶:", deployer.address);
 
   const balance = await ethers.provider.getBalance(deployer.address);
-  console.log("💰 賬戶餘額:", ethers.formatEther(balance), "DOT\n");
+  console.log("💰 賬戶餘額:", ethers.formatEther(balance), "MNT\n");
+
+  // 檢查餘額
+  if (balance === 0n) {
+    console.warn("⚠️  警告：賬戶餘額為 0 MNT");
+    console.warn("請先向該地址轉入 MNT 代幣用於 Gas 費用");
+    console.warn("Mantle Sepolia 測試幣領取: https://faucet.sepolia.mantle.xyz");
+    process.exit(1);
+  }
 
   // 獲取環境變量或使用部署者地址作為默認值
   const platformWallet = process.env.PLATFORM_WALLET || deployer.address;
