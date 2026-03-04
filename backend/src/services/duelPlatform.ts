@@ -21,7 +21,7 @@ const ABI = [
 const provider = new ethers.JsonRpcProvider(RPC_URL)
 const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider)
 
-const CACHE_TTL = 30_000 // 30 秒
+const CACHE_TTL = 30_000 // 30 seconds
 
 export interface MatchDTO {
   id: number

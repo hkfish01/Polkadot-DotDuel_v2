@@ -22,10 +22,10 @@ export default function ConnectWallet() {
         <button
           onClick={() => disconnect()}
           className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-          title="斷開錢包"
+          title="Disconnect wallet"
         >
           <LogOut size={16} />
-          <span className="hidden sm:inline">斷開</span>
+          <span className="hidden sm:inline">Disconnect</span>
         </button>
       </div>
     )
@@ -43,12 +43,12 @@ export default function ConnectWallet() {
           {isPending ? (
             <>
               <Loader2 size={16} className="animate-spin" />
-              <span>連接中...</span>
+              <span>Connecting...</span>
             </>
           ) : (
             <>
               <Wallet size={16} />
-              <span>連接錢包</span>
+              <span>Connect Wallet</span>
             </>
           )}
         </button>
@@ -56,6 +56,4 @@ export default function ConnectWallet() {
     </div>
   )
 }
-
-console.log('💼 ConnectWallet Component Loaded - v0.2.0-mvp')
 

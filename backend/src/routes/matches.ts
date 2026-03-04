@@ -3,7 +3,7 @@ import { getMatchById, getMatchesByIds, listMatches } from '../services/duelPlat
 
 const router = express.Router()
 
-// GET /api/matches - 獲取比賽列表
+// GET /api/matches - List matches
 router.get('/', async (req, res) => {
   try {
     const { status, mode, limit = '20', offset = '0', ids } = req.query
@@ -55,7 +55,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-// GET /api/matches/:id - 獲取單個比賽
+// GET /api/matches/:id - Get single match
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params

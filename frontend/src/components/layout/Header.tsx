@@ -7,11 +7,12 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const navigation = [
-    { name: '首頁', href: '/' },
-    { name: '發起預測', href: '/create' },
-    { name: '預測列表', href: '/matches' },
-    { name: '我的預測', href: '/my-matches' },
-    { name: '統計', href: '/stats' },
+    { name: 'Home', href: '/' },
+    { name: 'Duels', href: '/matches' },
+    { name: 'Create Duel', href: '/create' },
+    { name: 'Tournaments', href: '/tournaments' },
+    { name: 'My Duels', href: '/my-matches' },
+    { name: 'Stats', href: '/stats' },
   ]
 
   return (
@@ -27,7 +28,7 @@ export default function Header() {
                     <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                       DotDuel
                     </h1>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">v1.0.0-mvp</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">v2.0.0</p>
                   </div>
                 </Link>
 

@@ -4,7 +4,7 @@ import { getPlatformStats } from '../services/duelPlatform.js'
 
 const router = express.Router()
 
-// GET /api/stats/platform - 獲取平台統計
+// GET /api/stats/platform - Get platform stats
 router.get('/platform', async (req, res) => {
   try {
     const stats = await getPlatformStats()
@@ -28,7 +28,7 @@ router.get('/platform', async (req, res) => {
   }
 })
 
-// GET /api/stats/recent - 獲取最近比賽
+// GET /api/stats/recent - Get recent matches
 router.get('/recent', async (req, res) => {
   try {
     const { limit = '10' } = req.query

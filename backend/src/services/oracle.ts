@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-// Oracle 服務類
+// Oracle Service class
 export class OracleService {
   private provider: ethers.JsonRpcProvider
   private wallet: ethers.Wallet | ethers.HDNodeWallet
@@ -11,25 +11,25 @@ export class OracleService {
   private isRunning: boolean = false
 
   constructor() {
-    // 初始化 provider
+    // Initialize provider
     this.provider = new ethers.JsonRpcProvider(
       process.env.RPC_URL || 'https://rpc.sepolia.mantle.xyz'
     )
 
-    // 初始化 wallet（需要私鑰）
+    // Initialize wallet (requires private key)
     const privateKey = process.env.ORACLE_PRIVATE_KEY
     if (!privateKey) {
       console.warn('⚠️  Oracle private key not configured')
-      // 使用臨時錢包進行開發測試
-  // createRandom 在 ethers v6 會回傳 HDNodeWallet，因此保留與 Wallet 的聯集型別
+      // Use temporary wallet for development testing
+  // createRandom returns HDNodeWallet in ethers v6, so keep the union type with Wallet
   this.wallet = ethers.Wallet.createRandom().connect(this.provider)
     } else {
       this.wallet = new ethers.Wallet(privateKey, this.provider)
     }
 
-    // 初始化合約（需要 ABI 和地址）
+    // Initialize contract (requires ABI and address)
     const contractAddress = process.env.CONTRACT_ADDRESS || ethers.ZeroAddress
-    // TODO: 載入實際的合約 ABI
+    // TODO: Load actual contract ABI
     const contractABI = [
       'function submitResultByOracle(uint256 matchId, address winner) external',
       'function getMatch(uint256 matchId) external view returns (tuple)',
@@ -43,7 +43,7 @@ export class OracleService {
     console.log('📍 Oracle address:', this.wallet.address)
   }
 
-  // 啟動 Oracle 服務
+  // Start Oracle service
   async start() {
     if (this.isRunning) {
       console.log('⚠️  Oracle service is already running')
@@ -53,34 +53,34 @@ export class OracleService {
     this.isRunning = true
     console.log('🔮 Oracle Service started')
 
-    // 監聽區塊鏈事件
+    // Listen to blockchain events
     this.listenToEvents()
 
-    // 啟動定時任務
+    // Start scheduled tasks
     this.startScheduledTasks()
   }
 
-  // 停止 Oracle 服務
+  // Stop Oracle service
   async stop() {
     this.isRunning = false
     console.log('🔮 Oracle Service stopped')
   }
 
-  // 監聽區塊鏈事件
+  // Listen to blockchain events
   private listenToEvents() {
     try {
-      // 監聽比賽創建事件（Oracle 模式）
+      // Listen for match creation events (Oracle mode)
       this.contract.on('MatchCreated', async (matchId, creator, mode) => {
-        if (mode === 1) { // Oracle 模式
+        if (mode === 1) { // Oracle mode
           console.log(`📢 New Oracle match created: ${matchId}`)
-          // TODO: 處理新的 Oracle 模式比賽
+          // TODO: Handle new Oracle mode match
         }
       })
 
-      // 監聽比賽開始事件
+      // Listen for match start events
       this.contract.on('MatchStarted', async (matchId) => {
         console.log(`📢 Match started: ${matchId}`)
-        // TODO: 開始監控比賽結果
+        // TODO: Start monitoring match results
       })
 
       console.log('👂 Listening to blockchain events...')
@@ -89,40 +89,40 @@ export class OracleService {
     }
   }
 
-  // 定時任務
+  // Scheduled tasks
   private startScheduledTasks() {
-    // 每5分鐘檢查一次需要結算的比賽
+    // Check matches pending settlement every 5 minutes
     setInterval(() => {
       if (this.isRunning) {
         this.checkPendingMatches()
       }
-    }, 5 * 60 * 1000) // 5分鐘
+    }, 5 * 60 * 1000) // 5 minutes
 
     console.log('⏰ Scheduled tasks started')
   }
 
-  // 檢查待結算的比賽
+  // Check pending matches for settlement
   private async checkPendingMatches() {
     try {
       console.log('🔍 Checking pending matches...')
       
-      // TODO: 從數據庫或區塊鏈獲取待結算的比賽列表
-      // TODO: 對每個比賽調用 fetchMatchResult
+      // TODO: Get pending matches from database or blockchain
+      // TODO: Call fetchMatchResult for each match
       
     } catch (error) {
       console.error('Error checking pending matches:', error)
     }
   }
 
-  // 從 mydupr API 獲取比賽結果
+  // Fetch match result from mydupr API
   private async fetchMatchResult(externalMatchId: string): Promise<string | null> {
     try {
       const apiUrl = process.env.MYDUPR_API_URL || 'https://api.mydupr.com'
       
-      // TODO: 實際調用 mydupr API
+      // TODO: Actually call mydupr API
       console.log(`🔍 Fetching result for external match: ${externalMatchId}`)
       
-      // 模擬 API 響應
+      // Simulated API response
       // const response = await fetch(`${apiUrl}/matches/${externalMatchId}`)
       // const data = await response.json()
       // return data.winner
@@ -134,17 +134,17 @@ export class OracleService {
     }
   }
 
-  // 提交結果到區塊鏈
+  // Submit result to blockchain
   async submitResult(matchId: number, winner: string): Promise<boolean> {
     try {
       console.log(`📤 Submitting result for match ${matchId}`)
       console.log(`🏆 Winner: ${winner}`)
 
-      // 發送交易
+      // Send transaction
       const tx = await this.contract.submitResultByOracle(matchId, winner)
       console.log(`⏳ Transaction sent: ${tx.hash}`)
 
-      // 等待確認
+      // Wait for confirmation
       const receipt = await tx.wait()
       console.log(`✅ Transaction confirmed in block ${receipt.blockNumber}`)
 
@@ -155,11 +155,11 @@ export class OracleService {
     }
   }
 
-  // 手動觸發結算（用於測試）
+  // Manually trigger settlement (for testing)
   async manualSettle(matchId: number, externalMatchId: string) {
     console.log(`🔧 Manual settle triggered for match ${matchId}`)
     
-    // 獲取結果
+    // Get result
     const winner = await this.fetchMatchResult(externalMatchId)
     
     if (!winner) {
@@ -167,11 +167,11 @@ export class OracleService {
       return false
     }
 
-    // 提交結果
+    // Submit result
     return await this.submitResult(matchId, winner)
   }
 
-  // 獲取 Oracle 狀態
+  // Get Oracle status
   getStatus() {
     return {
       isRunning: this.isRunning,
@@ -182,7 +182,7 @@ export class OracleService {
   }
 }
 
-// 創建單例
+// Create singleton
 let oracleInstance: OracleService | null = null
 
 export function getOracleService(): OracleService {

@@ -86,17 +86,17 @@ export default function MatchList() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          比賽列表
+          Duel List
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
-          瀏覽所有公開比賽，選擇感興趣的比賽加入
+          Browse all open duels and join the one that interests you
         </p>
         <button
           onClick={() => refetch()}
           className="mt-4 inline-flex items-center gap-2 px-4 py-2 text-sm text-pink-600 dark:text-pink-400 border border-pink-500 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/30 transition-colors"
         >
           <RefreshCw size={16} className={isRefetching ? 'animate-spin' : ''} />
-          {isRefetching ? '更新中...' : '重新整理'}
+          {isRefetching ? 'Refreshing...' : 'Refresh'}
         </button>
       </div>
 
@@ -105,15 +105,15 @@ export default function MatchList() {
         <div className="flex items-center gap-2 mb-4">
           <Filter size={20} className="text-gray-500" />
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            篩選條件
+            Filters
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* 搜索 */}
+          {/* Search */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              搜索
+              Search
             </label>
             <div className="relative">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -121,48 +121,48 @@ export default function MatchList() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="搜索比賽描述..."
+                placeholder="Search match descriptions..."
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
               />
             </div>
           </div>
 
-          {/* 狀態篩選 */}
+          {/* Status Filter */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              比賽狀態
+              Status
             </label>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
             >
-              <option value="all">所有狀態</option>
-              <option value="0">等待中</option>
-              <option value="1">進行中</option>
-              <option value="2">已完成</option>
-              <option value="3">已取消</option>
+              <option value="all">All Status</option>
+              <option value="0">Waiting</option>
+              <option value="1">In Progress</option>
+              <option value="2">Completed</option>
+              <option value="3">Cancelled</option>
             </select>
           </div>
 
-          {/* 模式篩選 */}
+          {/* Mode Filter */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              比賽模式
+              Mode
             </label>
             <select
               value={filterMode}
               onChange={(e) => setFilterMode(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
             >
-              <option value="all">所有模式</option>
-              <option value="0">裁判模式</option>
-              <option value="1">Oracle模式</option>
+              <option value="all">All Modes</option>
+              <option value="0">Referee Mode</option>
+              <option value="1">Oracle Mode</option>
             </select>
           </div>
         </div>
 
-        {/* 重置按鈕 */}
+        {/* Reset Button */}
         <div className="mt-4 flex justify-end">
           <button
             onClick={() => {
@@ -173,7 +173,7 @@ export default function MatchList() {
             className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
           >
             <RefreshCw size={16} />
-            重置篩選
+            Reset Filters
           </button>
         </div>
       </div>
@@ -181,31 +181,31 @@ export default function MatchList() {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">總比賽數</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Total Matches</p>
           <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">等待中</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Waiting</p>
           <p className="text-2xl font-bold text-yellow-600">{stats.waiting}</p>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">進行中</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">In Progress</p>
           <p className="text-2xl font-bold text-blue-600">{stats.inProgress}</p>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">已完成</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Completed</p>
           <p className="text-2xl font-bold text-green-600">{stats.completed}</p>
           {stats.cancelled > 0 && (
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              已取消 {stats.cancelled} 場
+              Cancelled: {stats.cancelled}
             </p>
           )}
         </div>
       </div>
 
       <div className="mb-6 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-blue-500/10 dark:from-pink-500/20 dark:via-purple-500/20 dark:to-blue-500/20 border border-pink-500/30 dark:border-pink-500/40 rounded-xl p-4">
-        <p className="text-sm text-pink-700 dark:text-pink-300 mb-1">累積押注量</p>
-        <p className="text-2xl font-semibold text-pink-600 dark:text-pink-200">{totalVolumeDisplay} DOT</p>
+        <p className="text-sm text-pink-700 dark:text-pink-300 mb-1">Total Stake Volume</p>
+        <p className="text-2xl font-semibold text-pink-600 dark:text-pink-200">{totalVolumeDisplay} ETH</p>
       </div>
 
       {error && (
@@ -213,10 +213,10 @@ export default function MatchList() {
           <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" />
           <div>
             <p className="text-sm font-semibold text-red-600 dark:text-red-300 mb-1">
-              載入比賽資料時發生錯誤
+              Error loading match data
             </p>
             <p className="text-sm text-red-600/80 dark:text-red-200">
-              {error instanceof Error ? error.message : '請稍後再試。'}
+              {error instanceof Error ? error.message : 'Please try again later.'}
             </p>
           </div>
         </div>
@@ -226,7 +226,7 @@ export default function MatchList() {
       {isLoading ? (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
           <div className="animate-spin w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">載入中...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
         </div>
       ) : filteredMatches.length === 0 ? (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
@@ -234,10 +234,10 @@ export default function MatchList() {
             <Filter size={48} className="mx-auto" />
           </div>
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            沒有找到比賽
+            No Matches Found
           </h3>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            調整篩選條件或創建新比賽
+            Adjust filters or create a new match
           </p>
           <button
             onClick={() => {
@@ -248,7 +248,7 @@ export default function MatchList() {
             }}
             className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-medium hover:from-pink-600 hover:to-purple-700 transition-all"
           >
-            重置篩選
+            Reset Filters
           </button>
         </div>
       ) : (
@@ -272,11 +272,11 @@ export default function MatchList() {
         </div>
       )}
 
-      {/* 未連接提示 */}
+      {/* Not Connected Notice */}
       {!isConnected && (
         <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 text-center">
           <p className="text-blue-800 dark:text-blue-200">
-            💡 連接錢包後可以加入比賽
+            💡 Connect your wallet to join matches
           </p>
         </div>
       )}
@@ -284,4 +284,3 @@ export default function MatchList() {
   )
 }
 
-console.log('📋 MatchList Page Loaded - v0.3.0-mvp')

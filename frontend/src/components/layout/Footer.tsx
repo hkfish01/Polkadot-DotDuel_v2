@@ -8,23 +8,23 @@ export default function Footer() {
           {/* About */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              關於我們
+              About
             </h3>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Polkadot Duel Platform 是一個基於 Polkadot 的去中心化對賭平台，
-              使用 REVM 技術構建。
+              DotDuel is a decentralised 1v1 prediction & tournament platform
+              built on Polkadot with Revive (REVM) technology.
             </p>
           </div>
 
           {/* Links */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              快速鏈接
+              Quick Links
             </h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="/docs" className="text-gray-600 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400">
-                  文檔
+                <a href="/tournaments" className="text-gray-600 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400">
+                  Tournaments
                 </a>
               </li>
               <li>
@@ -33,8 +33,8 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/faucet" className="text-gray-600 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400">
-                  測試網水龍頭
+                <a href="https://wiki.polkadot.network" className="text-gray-600 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400">
+                  Polkadot Wiki
                 </a>
               </li>
             </ul>
@@ -43,7 +43,7 @@ export default function Footer() {
           {/* Social */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              社交媒體
+              Community
             </h3>
             <div className="flex space-x-4">
               <a
@@ -77,8 +77,8 @@ export default function Footer() {
         {/* Copyright */}
         <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
           <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600 dark:text-gray-400">
-            <p>© 2025 DotDuel - Polkadot 預測協議. Made for Dot Your Future Hackathon.</p>
-            <p className="mt-2 md:mt-0">Version: v1.0.0-mvp</p>
+            <p>© 2025 DotDuel — Decentralised Prediction & Tournament Protocol. Built for Polkadot Hackathon.</p>
+            <p className="mt-2 md:mt-0">Version: v2.0.0</p>
           </div>
         </div>
       </div>

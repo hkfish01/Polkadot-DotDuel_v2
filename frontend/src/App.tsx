@@ -10,6 +10,9 @@ import MatchList from './pages/MatchList'
 import MatchDetail from './pages/MatchDetail'
 import MyMatches from './pages/MyMatches'
 import Stats from './pages/Stats'
+import TournamentList from './pages/TournamentList'
+import TournamentDetail from './pages/TournamentDetail'
+import CreateTournament from './pages/CreateTournament'
 
 const queryClient = new QueryClient()
 
@@ -26,6 +29,9 @@ function App() {
               <Route path="/matches/:id" element={<MatchDetail />} />
               <Route path="/my-matches" element={<MyMatches />} />
               <Route path="/stats" element={<Stats />} />
+              <Route path="/tournaments" element={<TournamentList />} />
+              <Route path="/tournaments/create" element={<CreateTournament />} />
+              <Route path="/tournaments/:id" element={<TournamentDetail />} />
             </Routes>
           </Layout>
           <Toaster 

@@ -13,7 +13,7 @@ const isValidAddress = (address: string) => {
   }
 }
 
-// GET /api/users/:address/stats - 獲取用戶統計
+// GET /api/users/:address/stats - Get user stats
 router.get('/:address/stats', async (req, res) => {
   try {
     const { address } = req.params
@@ -43,7 +43,7 @@ router.get('/:address/stats', async (req, res) => {
   }
 })
 
-// GET /api/users/:address/matches - 獲取用戶比賽列表
+// GET /api/users/:address/matches - Get user matches
 router.get('/:address/matches', async (req, res) => {
   try {
     const { address } = req.params

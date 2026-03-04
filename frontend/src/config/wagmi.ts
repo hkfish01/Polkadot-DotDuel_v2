@@ -1,7 +1,7 @@
 import { http, createConfig } from 'wagmi'
 import { injected } from 'wagmi/connectors'
 
-// Mantle Mainnet 配置
+// Mantle Mainnet config (placeholder — will be replaced with Revive chain)
 export const mantleMainnet = {
   id: 5000,
   name: 'Mantle',
@@ -28,7 +28,7 @@ export const mantleMainnet = {
   testnet: false,
 }
 
-// Mantle Sepolia Testnet 配置
+// Mantle Sepolia Testnet config (placeholder — will be replaced with Revive testnet)
 export const mantleSepolia = {
   id: 5003,
   name: 'Mantle Sepolia Testnet',
@@ -55,11 +55,11 @@ export const mantleSepolia = {
   testnet: true,
 }
 
-// 選擇當前使用的網路（根據環境變數）
+// Select network based on environment variable
 const useTestnet = import.meta.env.VITE_USE_TESTNET === 'true'
 export const currentChain = useTestnet ? mantleSepolia : mantleMainnet
 
-// Wagmi 配置
+// Wagmi config
 export const config = createConfig({
   chains: [currentChain as any],
   connectors: [
@@ -71,7 +71,7 @@ export const config = createConfig({
   },
 })
 
-// 合約地址
+// Contract address
 export const CONTRACT_ADDRESS = import.meta.env.VITE_CONTRACT_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000'
 
 console.log('📋 Wagmi Config Loaded - v0.3.0-mantle')

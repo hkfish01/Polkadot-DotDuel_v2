@@ -68,14 +68,14 @@ const normalizeUserStats = (raw: any): UserStatsData => ({
 })
 
 export function useContract() {
-  // 寫入合約
+  // Write to contract
   const { data: hash, writeContract, isPending, error } = useWriteContract()
   
-  // 等待交易確認
+  // Wait for transaction confirmation
   const { isLoading: isConfirming, isSuccess: isConfirmed } = 
     useWaitForTransactionReceipt({ hash })
 
-  // 創建比賽
+  // Create match
   const createMatch = async (
     mode: number,
     stakeAmount: bigint,
@@ -94,7 +94,7 @@ export function useContract() {
     })
   }
 
-  // 加入比賽
+  // Join match
   const joinMatch = async (matchId: number, stakeAmount: bigint) => {
     return writeContract({
       address: CONTRACT_ADDRESS,
@@ -105,7 +105,7 @@ export function useContract() {
     })
   }
 
-  // 提交結果（裁判）
+  // Submit result (referee)
   const submitResultByReferee = async (matchId: number, winner: string) => {
     return writeContract({
       address: CONTRACT_ADDRESS,
@@ -115,7 +115,7 @@ export function useContract() {
     })
   }
 
-  // 取消比賽
+  // Cancel match
   const cancelMatch = async (matchId: number) => {
     return writeContract({
       address: CONTRACT_ADDRESS,
@@ -138,7 +138,7 @@ export function useContract() {
   }
 }
 
-// 讀取合約數據
+// Read contract data
 export function useMatchData(matchId: number) {
   const enabled = Number.isInteger(matchId) && matchId >= 0
   const args = enabled ? ([BigInt(matchId)] as const) : undefined
@@ -200,6 +200,4 @@ export function useUserMatches(address: string | undefined) {
 
   return { matches, isLoading, error }
 }
-
-console.log('🎣 Contract Hooks Loaded - v0.2.0-mvp')
 

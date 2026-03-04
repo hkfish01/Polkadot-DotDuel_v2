@@ -10,20 +10,20 @@ export default function CreateMatch() {
   const { createMatch, isPending, isConfirming, isConfirmed } = useContract()
 
   const [formData, setFormData] = useState({
-    mode: '0', // 0: 裁判模式, 1: Oracle模式
+    mode: '0', // 0: Referee mode, 1: Oracle mode
     stakeAmount: '',
     startTime: '',
     endTime: '',
     description: '',
     externalMatchId: '',
-    includeStake: true, // 裁判是否同時押注
+    includeStake: true, // Referee also stakes
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!isConnected) {
-      toast.error('請先連接錢包')
+      toast.error('Please connect your wallet first')
       return
     }
 
@@ -34,25 +34,25 @@ export default function CreateMatch() {
 
       const now = Math.floor(Date.now() / 1000)
       if (Number.isNaN(startTimestamp) || Number.isNaN(endTimestamp)) {
-        toast.error('請選擇有效的時間')
+        toast.error('Please select valid dates')
         return
       }
       if (startTimestamp <= now) {
-        toast.error('開始時間必須晚於現在')
+        toast.error('Start time must be in the future')
         return
       }
       if (endTimestamp <= startTimestamp) {
-        toast.error('結束時間必須晚於開始時間')
+        toast.error('End time must be after start time')
         return
       }
       const duration = endTimestamp - startTimestamp
       if (duration < 3600) {
-        toast.error('比賽時長需至少 1 小時')
+        toast.error('Match duration must be at least 1 hour')
         return
       }
       const maxDuration = 30 * 24 * 3600
       if (duration > maxDuration) {
-        toast.error('比賽時長不可超過 30 天')
+        toast.error('Match duration cannot exceed 30 days')
         return
       }
 
@@ -66,9 +66,9 @@ export default function CreateMatch() {
         formData.includeStake
       )
 
-      toast.success('比賽創建成功！')
+      toast.success('Match created successfully!')
       
-      // 重置表單
+      // Reset form
       setFormData({
         mode: '0',
         stakeAmount: '',
@@ -79,8 +79,8 @@ export default function CreateMatch() {
         includeStake: true,
       })
     } catch (error: any) {
-      console.error('創建比賽失敗:', error)
-      toast.error(error?.message || '創建比賽失敗')
+      console.error('Create match error:', error)
+      toast.error(error?.message || 'Failed to create match')
     }
   }
 
@@ -101,10 +101,10 @@ export default function CreateMatch() {
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8 text-center">
           <Trophy className="w-16 h-16 mx-auto mb-4 text-gray-400" />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            請先連接錢包
+            Connect Your Wallet
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            您需要連接錢包才能創建比賽
+            You need to connect a wallet to create a match
           </p>
         </div>
       </div>
@@ -115,20 +115,20 @@ export default function CreateMatch() {
     <div className="max-w-2xl mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          創建比賽
+          Create Duel
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
-          設置比賽參數並邀請玩家參加
+          Set up match parameters and invite players to join
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 space-y-6">
-        {/* 模式選擇 */}
+        {/* Mode Selection */}
         <div>
           <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
             <div className="flex items-center gap-2">
               <Trophy size={16} />
-              比賽模式
+              Match Mode
             </div>
           </label>
           <select
@@ -138,22 +138,22 @@ export default function CreateMatch() {
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
             required
           >
-            <option value="0">模式1 - 裁判模式（裁判判定結果）</option>
-            <option value="1">模式2 - Oracle模式（API自動判定）</option>
+            <option value="0">Referee Mode (referee decides result)</option>
+            <option value="1">Oracle Mode (API auto-decides result)</option>
           </select>
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
             {formData.mode === '0' 
-              ? '裁判創建比賽並手動提交結果，手續費: 裁判3% + 平台0.5%' 
-              : '從外部API同步比賽數據，自動判定結果，手續費: 平台0.5%'}
+              ? 'Referee creates match & submits result manually. Fee: referee 3% + platform 0.5%' 
+              : 'Syncs match data from external API, auto-decides result. Fee: platform 0.5%'}
           </p>
         </div>
 
-        {/* 押注金額 */}
+        {/* Stake Amount */}
         <div>
           <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
             <div className="flex items-center gap-2">
               <DollarSign size={16} />
-              押注金額 (DOT)
+              Stake Amount (ETH)
             </div>
           </label>
           <input
@@ -168,11 +168,11 @@ export default function CreateMatch() {
             required
           />
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-            每位玩家需要押注的 DOT 金額
+            Amount each player needs to stake
           </p>
         </div>
 
-        {/* 裁判是否押注 */}
+        {/* Referee also stakes */}
         {formData.mode === '0' && (
           <div className="flex items-center gap-2">
             <input
@@ -184,17 +184,17 @@ export default function CreateMatch() {
               className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
             />
             <label htmlFor="includeStake" className="text-sm text-gray-900 dark:text-white">
-              我作為裁判也參與押注（成為參賽者之一）
+              I (referee) also stake and participate as a player
             </label>
           </div>
         )}
 
-        {/* 開始時間 */}
+        {/* Start Time */}
         <div>
           <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
             <div className="flex items-center gap-2">
               <Calendar size={16} />
-              開始時間
+              Start Time
             </div>
           </label>
           <input
@@ -207,12 +207,12 @@ export default function CreateMatch() {
           />
         </div>
 
-        {/* 結束時間 */}
+        {/* End Time */}
         <div>
           <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
             <div className="flex items-center gap-2">
               <Calendar size={16} />
-              結束時間
+              End Time
             </div>
           </label>
           <input
@@ -225,12 +225,12 @@ export default function CreateMatch() {
           />
         </div>
 
-        {/* 比賽描述 */}
+        {/* Match Description */}
         <div>
           <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
             <div className="flex items-center gap-2">
               <FileText size={16} />
-              比賽描述
+              Match Description
             </div>
           </label>
           <textarea
@@ -238,17 +238,17 @@ export default function CreateMatch() {
             value={formData.description}
             onChange={handleChange}
             rows={4}
-            placeholder="例如: Pickleball 單打比賽..."
+            placeholder="e.g. Pickleball singles match..."
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
             required
           />
         </div>
 
-        {/* 外部比賽ID（Oracle模式必填） */}
+        {/* External Match ID (required for Oracle mode) */}
         {formData.mode === '1' && (
           <div>
             <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-              外部比賽ID (mydupr)
+              External Match ID (mydupr)
             </label>
             <input
               type="text"
@@ -260,12 +260,12 @@ export default function CreateMatch() {
               required
             />
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              從 mydupr API 獲取的比賽ID
+              Match ID from the mydupr API
             </p>
           </div>
         )}
 
-        {/* 提交按鈕 */}
+        {/* Submit */}
         <div className="pt-4">
           <button
             type="submit"
@@ -275,12 +275,12 @@ export default function CreateMatch() {
             {isPending || isConfirming ? (
               <>
                 <Loader2 size={20} className="animate-spin" />
-                {isPending ? '確認交易中...' : '等待確認...'}
+                {isPending ? 'Confirming...' : 'Waiting for confirmation...'}
               </>
             ) : (
               <>
                 <Trophy size={20} />
-                創建比賽
+                Create Match
               </>
             )}
           </button>
@@ -288,28 +288,28 @@ export default function CreateMatch() {
           {isConfirmed && (
             <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
               <p className="text-sm text-green-800 dark:text-green-200">
-                ✅ 比賽創建成功！交易已確認。
+                ✅ Match created successfully! Transaction confirmed.
               </p>
             </div>
           )}
         </div>
       </form>
 
-      {/* 說明區塊 */}
+      {/* Info Section */}
       <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
         <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
-          💡 創建比賽說明
+          💡 How It Works
         </h3>
         <ul className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
-          <li>• 創建比賽後，等待另一位玩家加入並押注</li>
-          <li>• 兩位玩家都押注後，比賽狀態變為"進行中"</li>
-          <li>• 比賽結束後，裁判或Oracle提交結果</li>
-          <li>• 贏家自動獲得獎金（扣除手續費）</li>
-          <li>• 如果沒有對手加入，可以取消比賽並退款</li>
+          <li>• After creating a match, wait for another player to join and stake</li>
+          <li>• Once both players have staked, the match status becomes "In Progress"</li>
+          <li>• After the match ends, the referee or Oracle submits the result</li>
+          <li>• The winner automatically receives the prize (minus fees)</li>
+          <li>• If no opponent joins, you can cancel the match and get a refund</li>
         </ul>
       </div>
     </div>
   )
 }
 
-console.log('📝 CreateMatch Page Loaded - v0.2.0-mvp')
+

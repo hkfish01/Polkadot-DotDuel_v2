@@ -18,7 +18,7 @@ import {
   RefreshCw,
 } from 'lucide-react'
 
-const statusNames = ['等待中', '進行中', '已完成', '已取消']
+const statusNames = ['Waiting', 'In Progress', 'Completed', 'Cancelled']
 const statusColors = [
   'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
   'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
@@ -52,12 +52,12 @@ export default function MatchDetail() {
   } = useContract()
 
   const formatAddress = (addr: string) => {
-    if (!addr || addr === ZERO_ADDRESS) return '等待加入'
+    if (!addr || addr === ZERO_ADDRESS) return 'Waiting for player'
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`
   }
 
   const formatDate = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleString('zh-TW', {
+    return new Date(timestamp * 1000).toLocaleString('en-US', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -68,7 +68,7 @@ export default function MatchDetail() {
 
   const handleJoinMatch = async () => {
     if (!isConnected) {
-      toast.error('請先連接錢包')
+      toast.error('Please connect your wallet first')
       return
     }
 
@@ -78,22 +78,22 @@ export default function MatchDetail() {
 
     try {
       await joinMatch(matchId, stakeAmountWei)
-      toast.success('成功加入比賽！')
+      toast.success('Successfully joined the match!')
       await refetch()
     } catch (error: any) {
-      console.error('加入比賽失敗:', error)
-      toast.error(error?.message || '加入比賽失敗')
+      console.error('Failed to join match:', error)
+      toast.error(error?.message || 'Failed to join match')
     }
   }
 
   const handleSubmitResult = async () => {
     if (!winnerAddress) {
-      toast.error('請輸入贏家地址')
+      toast.error('Please enter the winner address')
       return
     }
 
     if (!winnerAddress.startsWith('0x') || winnerAddress.length !== 42) {
-      toast.error('請輸入有效的以太坊地址')
+      toast.error('Please enter a valid Ethereum address')
       return
     }
 
@@ -101,17 +101,17 @@ export default function MatchDetail() {
 
     try {
       await submitResultByReferee(matchId, winnerAddress)
-      toast.success('結果提交成功！')
+      toast.success('Result submitted successfully!')
       setWinnerAddress('')
       await refetch()
     } catch (error: any) {
-      console.error('提交結果失敗:', error)
-      toast.error(error?.message || '提交結果失敗')
+      console.error('Failed to submit result:', error)
+      toast.error(error?.message || 'Failed to submit result')
     }
   }
 
   const handleCancelMatch = async () => {
-    if (!confirm('確定要取消這場比賽嗎？押注金額將退還給參與者。')) {
+    if (!confirm('Are you sure you want to cancel this match? Stakes will be refunded.')) {
       return
     }
 
@@ -119,11 +119,11 @@ export default function MatchDetail() {
 
     try {
       await cancelMatch(matchId)
-      toast.success('比賽已取消！')
+      toast.success('Match cancelled!')
       await refetch()
     } catch (error: any) {
-      console.error('取消比賽失敗:', error)
-      toast.error(error?.message || '取消比賽失敗')
+      console.error('Failed to cancel match:', error)
+      toast.error(error?.message || 'Failed to cancel match')
     }
   }
 
@@ -141,16 +141,16 @@ export default function MatchDetail() {
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
           <XCircle className="w-16 h-16 mx-auto mb-4 text-red-500" />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            比賽不存在
+            Match Not Found
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            找不到指定的比賽，可能已被刪除或ID錯誤
+            The specified match was not found or the ID is invalid
           </p>
           <button
             onClick={() => navigate('/matches')}
             className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-medium hover:from-pink-600 hover:to-purple-700 transition-all"
           >
-            返回比賽列表
+            Back to Duel List
           </button>
         </div>
       </div>
@@ -190,14 +190,14 @@ export default function MatchDetail() {
           className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400 mb-4"
         >
           <ArrowLeft size={20} />
-          返回比賽列表
+          Back to Duel List
         </button>
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              比賽詳情
+              Duel Details
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">比賽 ID: #{matchId}</p>
+            <p className="text-gray-600 dark:text-gray-400">Duel ID: #{matchId}</p>
           </div>
           <div className="flex items-center gap-3">
             <span
@@ -206,7 +206,7 @@ export default function MatchDetail() {
                 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
               }`}
             >
-              {statusNames[match.status] ?? '未知狀態'}
+              {statusNames[match.status] ?? 'Unknown'}
             </span>
             <button
               type="button"
@@ -214,7 +214,7 @@ export default function MatchDetail() {
               className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-pink-600 dark:text-pink-300 border border-pink-500/60 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/30 transition-colors"
             >
               <RefreshCw size={16} className={isRefetching ? 'animate-spin' : ''} />
-              {isRefetching ? '更新中...' : '重新整理'}
+              {isRefetching ? 'Refreshing...' : 'Refresh'}
             </button>
           </div>
         </div>
@@ -227,11 +227,11 @@ export default function MatchDetail() {
           <div className="flex items-center gap-2 mb-3">
             <Trophy className="w-5 h-5 text-pink-500" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              比賽說明
+              Description
             </h2>
           </div>
           <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-            {match.description || '無描述'}
+            {match.description || 'No description'}
           </p>
         </div>
 
@@ -244,13 +244,13 @@ export default function MatchDetail() {
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                押注金額
+                Stake Amount
               </p>
               <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                {formatEther(stakeAmountWei)} DOT
+                {formatEther(stakeAmountWei)} ETH
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                獎池總額: {formatEther(totalPoolWei)} DOT
+                Total Prize Pool: {formatEther(totalPoolWei)} ETH
               </p>
             </div>
           </div>
@@ -262,15 +262,15 @@ export default function MatchDetail() {
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                比賽模式
+                Match Mode
               </p>
               <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                {match.mode === 0 ? '裁判模式' : 'Oracle模式'}
+                {match.mode === 0 ? 'Referee Mode' : 'Oracle Mode'}
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 {match.mode === 0
-                  ? '裁判手動提交結果'
-                  : 'API 自動判定結果'}
+                  ? 'Referee submits result manually'
+                  : 'API auto-decides result'}
               </p>
             </div>
           </div>
@@ -282,7 +282,7 @@ export default function MatchDetail() {
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                開始時間
+                Start Time
               </p>
               <p className="text-base font-medium text-gray-900 dark:text-white">
                 {formatDate(match.startTime)}
@@ -297,7 +297,7 @@ export default function MatchDetail() {
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                結束時間
+                End Time
               </p>
               <p className="text-base font-medium text-gray-900 dark:text-white">
                 {formatDate(match.endTime)}
@@ -312,7 +312,7 @@ export default function MatchDetail() {
         <div className="flex items-center gap-2 mb-4">
           <Users className="w-5 h-5 text-pink-500" />
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-            參與者 ({participantCount}/2)
+            Participants ({participantCount}/2)
           </h2>
         </div>
 
@@ -324,13 +324,13 @@ export default function MatchDetail() {
 
             const labels: string[] = []
             if (participantAddress === creatorAddress) {
-              labels.push('創建者')
+              labels.push('Creator')
             }
             if (participantAddress === refereeAddress && match.mode === 0) {
-              labels.push('裁判')
+              labels.push('Referee')
             }
             if (isCurrentUser) {
-              labels.push('你')
+              labels.push('You')
             }
 
             return (
@@ -344,7 +344,7 @@ export default function MatchDetail() {
                   </div>
                   <div>
                     <p className="font-mono text-sm font-medium text-gray-900 dark:text-white">
-                      {isEmpty ? '等待玩家加入...' : formatAddress(participant)}
+                      {isEmpty ? 'Waiting for player...' : formatAddress(participant)}
                     </p>
                     {!isEmpty && labels.length > 0 && (
                       <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -368,10 +368,10 @@ export default function MatchDetail() {
         {canJoin && (
           <div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-              加入比賽
+              Join Match
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              押注 {formatEther(stakeAmountWei)} DOT 加入這場比賽
+              Stake {formatEther(stakeAmountWei)} ETH to join
             </p>
             <button
               onClick={handleJoinMatch}
@@ -381,12 +381,12 @@ export default function MatchDetail() {
               {isPending || isConfirming ? (
                 <>
                   <Loader2 size={20} className="animate-spin" />
-                  {isPending ? '確認交易中...' : '等待確認...'}
+                  {isPending ? 'Confirming...' : 'Awaiting confirmation...'}
                 </>
               ) : (
                 <>
                   <Trophy size={20} />
-                  加入比賽
+                  Join Match
                 </>
               )}
             </button>
@@ -397,10 +397,10 @@ export default function MatchDetail() {
         {canSubmitResult && (
           <div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-              提交比賽結果
+              Submit Result
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              作為裁判，請輸入贏家的錢包地址
+              As referee, enter the winner's wallet address
             </p>
             <div className="space-y-3">
               <input
@@ -418,12 +418,12 @@ export default function MatchDetail() {
                 {isPending || isConfirming ? (
                   <>
                     <Loader2 size={20} className="animate-spin" />
-                    {isPending ? '確認交易中...' : '等待確認...'}
+                    {isPending ? 'Confirming...' : 'Awaiting confirmation...'}
                   </>
                 ) : (
                   <>
                     <CheckCircle size={20} />
-                    提交結果
+                    Submit Result
                   </>
                 )}
               </button>
@@ -435,10 +435,10 @@ export default function MatchDetail() {
         {canCancel && (
           <div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-              取消比賽
+              Cancel Match
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              取消比賽並退還押注金額給所有參與者
+              Cancel the match and refund stakes to all participants
             </p>
             <button
               onClick={handleCancelMatch}
@@ -448,12 +448,12 @@ export default function MatchDetail() {
               {isPending || isConfirming ? (
                 <>
                   <Loader2 size={20} className="animate-spin" />
-                  {isPending ? '確認交易中...' : '等待確認...'}
+                  {isPending ? 'Confirming...' : 'Awaiting confirmation...'}
                 </>
               ) : (
                 <>
                   <XCircle size={20} />
-                  取消比賽
+                  Cancel Match
                 </>
               )}
             </button>
@@ -466,12 +466,12 @@ export default function MatchDetail() {
             <AlertCircle className="w-12 h-12 mx-auto mb-3 text-gray-400" />
             <p className="text-gray-600 dark:text-gray-400">
               {!isConnected
-                ? '請連接錢包以進行操作'
+                ? 'Please connect your wallet to take action'
                 : match.status === 2
-                ? '比賽已完成'
+                ? 'Match completed'
                 : match.status === 3
-                ? '比賽已取消'
-                : '暫無可用操作'}
+                ? 'Match cancelled'
+                : 'No actions available'}
             </p>
           </div>
         )}
@@ -480,7 +480,7 @@ export default function MatchDetail() {
         {isConfirmed && (
           <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
             <p className="text-sm text-green-800 dark:text-green-200">
-              ✅ 操作成功！交易已確認。
+              ✅ Action successful! Transaction confirmed.
             </p>
           </div>
         )}
@@ -488,5 +488,3 @@ export default function MatchDetail() {
     </div>
   )
 }
-
-console.log('📄 MatchDetail Page Loaded - v0.3.0-mvp')

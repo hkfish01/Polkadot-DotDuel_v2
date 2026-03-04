@@ -1,92 +1,89 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  console.log("🚀 開始部署 DuelPlatform 合約...");
-  console.log("📋 版本: v0.1.0-mvp\n");
+  console.log("🚀 Deploying DotDuel Platform v2.0.0...\n");
 
-  // 檢查私鑰
   if (!process.env.DEPLOYER_PRIVATE_KEY) {
-    console.error("❌ 錯誤：DEPLOYER_PRIVATE_KEY 未設定");
-    console.error("請在 .env 中設定 DEPLOYER_PRIVATE_KEY（不包含 0x 前綴）");
+    console.error("❌ DEPLOYER_PRIVATE_KEY not set in .env");
     process.exit(1);
   }
 
   const [deployer] = await ethers.getSigners();
-  
+
   if (!deployer) {
-    console.error("❌ 錯誤：無法取得簽名者（signer）");
-    console.error("請確認 DEPLOYER_PRIVATE_KEY 有效且網路連線正常");
+    console.error("❌ Cannot get signer. Check DEPLOYER_PRIVATE_KEY.");
     process.exit(1);
   }
-  
-  console.log("👤 部署賬戶:", deployer.address);
+
+  console.log("👤 Deployer:", deployer.address);
 
   const balance = await ethers.provider.getBalance(deployer.address);
-  console.log("💰 賬戶餘額:", ethers.formatEther(balance), "MNT\n");
+  const network = await ethers.provider.getNetwork();
+  console.log("💰 Balance:", ethers.formatEther(balance), "ETH");
+  console.log("🌐 Network:", network.name, `(chainId: ${network.chainId})\n`);
 
-  // 檢查餘額
   if (balance === 0n) {
-    console.warn("⚠️  警告：賬戶餘額為 0 MNT");
-    console.warn("請先向該地址轉入 MNT 代幣用於 Gas 費用");
-    console.warn("Mantle Sepolia 測試幣領取: https://faucet.sepolia.mantle.xyz");
+    console.error("❌ Deployer has 0 balance. Please fund the account first.");
     process.exit(1);
   }
 
-  // 獲取環境變量或使用部署者地址作為默認值
   const platformWallet = process.env.PLATFORM_WALLET || deployer.address;
   const oracleAddress = process.env.ORACLE_ADDRESS || deployer.address;
 
-  console.log("⚙️  配置:");
-  console.log("   平台錢包:", platformWallet);
-  console.log("   Oracle 地址:", oracleAddress);
+  console.log("⚙️  Config:");
+  console.log("   Platform Wallet:", platformWallet);
+  console.log("   Oracle Address:", oracleAddress);
   console.log("");
 
-  // 部署合約
+  // Deploy DuelPlatform
+  console.log("📦 Deploying DuelPlatform...");
   const DuelPlatform = await ethers.getContractFactory("DuelPlatform");
   const duelPlatform = await DuelPlatform.deploy(platformWallet, oracleAddress);
-
   await duelPlatform.waitForDeployment();
+  const duelAddress = await duelPlatform.getAddress();
+  console.log("✅ DuelPlatform deployed at:", duelAddress);
 
-  const contractAddress = await duelPlatform.getAddress();
+  // Deploy TournamentPlatform
+  console.log("📦 Deploying TournamentPlatform...");
+  const TournamentPlatform = await ethers.getContractFactory("TournamentPlatform");
+  const tournamentPlatform = await TournamentPlatform.deploy(platformWallet, oracleAddress);
+  await tournamentPlatform.waitForDeployment();
+  const tournamentAddress = await tournamentPlatform.getAddress();
+  console.log("✅ TournamentPlatform deployed at:", tournamentAddress);
 
-  console.log("✅ DuelPlatform 部署成功!");
-  console.log("📍 合約地址:", contractAddress);
-  console.log("🔗 區塊鏈:", (await ethers.provider.getNetwork()).name);
-  console.log("📦 部署區塊:", duelPlatform.deploymentTransaction()?.blockNumber);
-  console.log("");
+  // Verify versions
+  const duelVersion = await duelPlatform.VERSION();
+  const tournamentVersion = await tournamentPlatform.VERSION();
+  console.log("\n📌 Versions:");
+  console.log("   DuelPlatform:", duelVersion);
+  console.log("   TournamentPlatform:", tournamentVersion);
 
-  // 驗證合約版本
-  const version = await duelPlatform.VERSION();
-  console.log("📌 合約版本:", version);
-
-  // 驗證配置
+  // Verify config
   const storedPlatformWallet = await duelPlatform.platformWallet();
   const storedOracleAddress = await duelPlatform.oracleAddress();
-  console.log("✓ 平台錢包已設置:", storedPlatformWallet);
-  console.log("✓ Oracle 地址已設置:", storedOracleAddress);
-  console.log("");
+  console.log("\n✓ Platform Wallet:", storedPlatformWallet);
+  console.log("✓ Oracle Address:", storedOracleAddress);
 
-  console.log("🎉 部署完成！");
-  console.log("");
-  console.log("📝 請保存以下信息:");
-  console.log("=" .repeat(50));
-  console.log("合約地址:", contractAddress);
-  console.log("部署者:", deployer.address);
-  console.log("平台錢包:", storedPlatformWallet);
-  console.log("Oracle:", storedOracleAddress);
-  console.log("=" .repeat(50));
-  console.log("");
-  console.log("🔧 下一步:");
-  console.log("1. 更新前端配置 (VITE_CONTRACT_ADDRESS)");
-  console.log("2. 更新後端配置 (CONTRACT_ADDRESS)");
-  console.log("3. 在區塊瀏覽器驗證合約（可選）");
+  console.log("\n" + "=".repeat(60));
+  console.log("🎉 DEPLOYMENT COMPLETE");
+  console.log("=".repeat(60));
+  console.log("DuelPlatform:      ", duelAddress);
+  console.log("TournamentPlatform:", tournamentAddress);
+  console.log("Deployer:          ", deployer.address);
+  console.log("Platform Wallet:   ", storedPlatformWallet);
+  console.log("Oracle:            ", storedOracleAddress);
+  console.log("=".repeat(60));
+  console.log("\n🔧 Next steps:");
+  console.log("1. Update frontend config (VITE_CONTRACT_ADDRESS, VITE_TOURNAMENT_ADDRESS)");
+  console.log("2. Update backend config (CONTRACT_ADDRESS, TOURNAMENT_ADDRESS)");
+  console.log("3. Verify contracts on block explorer (optional)");
   console.log("");
 }
 
 main()
   .then(() => process.exit(0))
   .catch((error) => {
-    console.error("❌ 部署失敗:", error);
+    console.error("❌ Deployment failed:", error);
     process.exit(1);
   });
 

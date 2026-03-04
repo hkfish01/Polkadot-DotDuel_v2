@@ -22,7 +22,7 @@ type RecentMatch = {
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as const
 
-const statusLabels = ['等待中', '進行中', '已完成', '已取消']
+const statusLabels = ['Waiting', 'In Progress', 'Completed', 'Cancelled']
 const statusClasses = [
   'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
   'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
@@ -37,7 +37,7 @@ const formatAddress = (addr: string) => {
 
 const formatTimestamp = (timestamp: number) => {
   if (!timestamp) return '—'
-  return new Date(timestamp * 1000).toLocaleString('zh-TW', {
+  return new Date(timestamp * 1000).toLocaleString('en-US', {
     month: '2-digit',
     day: '2-digit',
     hour: '2-digit',
@@ -101,10 +101,10 @@ export default function Stats() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              平台統計
+              Platform Stats
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              查看平台整體數據和排行榜
+              View platform-wide data and leaderboards
             </p>
           </div>
           <button
@@ -113,7 +113,7 @@ export default function Stats() {
             className="inline-flex items-center gap-2 px-4 py-2 text-sm text-pink-600 dark:text-pink-300 border border-pink-500/60 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/30 transition-colors"
           >
             <RefreshCw size={16} className={isRefreshing ? 'animate-spin' : ''} />
-            {isRefreshing ? '更新中...' : '重新整理'}
+            {isRefreshing ? 'Refreshing...' : 'Refresh'}
           </button>
         </div>
       </div>
@@ -123,10 +123,10 @@ export default function Stats() {
           <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" />
           <div>
             <p className="text-sm font-semibold text-red-600 dark:text-red-300 mb-1">
-              資料載入時發生錯誤
+              Error loading data
             </p>
             <p className="text-sm text-red-600/80 dark:text-red-200">
-              {errorText || '請稍後再試。'}
+              {errorText || 'Please try again later.'}
             </p>
           </div>
         </div>
@@ -139,9 +139,9 @@ export default function Stats() {
             <Trophy className="w-8 h-8" />
             <Activity className="w-6 h-6 opacity-50" />
           </div>
-          <p className="text-sm opacity-90 mb-1">總比賽數</p>
+          <p className="text-sm opacity-90 mb-1">Total Duels</p>
           <p className="text-4xl font-bold">{statsLoading && !platformStats ? '...' : totalMatches}</p>
-          <p className="text-xs opacity-75 mt-2">等待中 {waitingMatches} 場</p>
+          <p className="text-xs opacity-75 mt-2">{waitingMatches} waiting</p>
         </div>
 
         <div className="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl shadow-sm p-6 text-white">
@@ -149,9 +149,9 @@ export default function Stats() {
             <Users className="w-8 h-8" />
             <TrendingUp className="w-6 h-6 opacity-50" />
           </div>
-          <p className="text-sm opacity-90 mb-1">活躍用戶</p>
+          <p className="text-sm opacity-90 mb-1">Active Users</p>
           <p className="text-4xl font-bold">{statsLoading && !platformStats ? '...' : totalUsers}</p>
-          <p className="text-xs opacity-75 mt-2">參與對決的獨立地址</p>
+          <p className="text-xs opacity-75 mt-2">Unique addresses in duels</p>
         </div>
 
         <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-sm p-6 text-white">
@@ -159,36 +159,36 @@ export default function Stats() {
             <DollarSign className="w-8 h-8" />
             <BarChart3 className="w-6 h-6 opacity-50" />
           </div>
-          <p className="text-sm opacity-90 mb-1">總交易量</p>
+          <p className="text-sm opacity-90 mb-1">Total Volume</p>
           <p className="text-4xl font-bold">{statsLoading && !platformStats ? '...' : totalVolumeDisplay}</p>
-          <p className="text-xs opacity-75 mt-2">DOT</p>
+          <p className="text-xs opacity-75 mt-2">ETH</p>
         </div>
       </div>
 
       {/* Detailed Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">已完成</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Completed</p>
           <p className="text-3xl font-bold text-green-600">
             {statsLoading && !platformStats ? '...' : completedMatches}
           </p>
-          <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">{completionRate}% 完成率</div>
+          <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">{completionRate}% completion rate</div>
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">進行中</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">In Progress</p>
           <p className="text-3xl font-bold text-blue-600">
             {statsLoading && !platformStats ? '...' : activeMatches}
           </p>
-          <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">{activeRate}% 活躍率</div>
+          <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">{activeRate}% active rate</div>
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">已取消</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Cancelled</p>
           <p className="text-3xl font-bold text-gray-600">
             {statsLoading && !platformStats ? '...' : cancelledMatches}
           </p>
-          <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">{cancelRate}% 取消率</div>
+          <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">{cancelRate}% cancel rate</div>
         </div>
       </div>
 
@@ -196,24 +196,24 @@ export default function Stats() {
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-8">
         <div className="flex items-center gap-2 mb-6">
           <Trophy className="w-6 h-6 text-yellow-500" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">排行榜</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Leaderboard</h2>
         </div>
 
         {statsLoading && !platformStats ? (
-          <div className="text-center py-10 text-gray-500 dark:text-gray-400">載入中...</div>
+          <div className="text-center py-10 text-gray-500 dark:text-gray-400">Loading...</div>
         ) : leaderboard.length === 0 ? (
-          <p className="text-sm text-gray-500 dark:text-gray-400">暫無玩家資料</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">No player data yet</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">排名</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">玩家</th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">勝場</th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">敗場</th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">勝率</th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">押注量</th>
+                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Rank</th>
+                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Player</th>
+                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Wins</th>
+                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Losses</th>
+                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Win Rate</th>
+                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Volume</th>
                 </tr>
               </thead>
               <tbody>
@@ -259,7 +259,7 @@ export default function Stats() {
                         <span className="text-sm font-semibold text-green-600">{player.winRate.toFixed(1)}%</span>
                       </td>
                       <td className="py-4 px-4 text-right">
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{volumeDisplay} DOT</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{volumeDisplay} ETH</span>
                       </td>
                     </tr>
                   )
@@ -274,13 +274,13 @@ export default function Stats() {
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
         <div className="flex items-center gap-2 mb-6">
           <Activity className="w-6 h-6 text-pink-500" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">最近比賽</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Recent Matches</h2>
         </div>
 
         {recentLoading && !recentMatches ? (
-          <div className="text-center py-10 text-gray-500 dark:text-gray-400">載入中...</div>
+          <div className="text-center py-10 text-gray-500 dark:text-gray-400">Loading...</div>
         ) : recentList.length === 0 ? (
-          <p className="text-sm text-gray-500 dark:text-gray-400">暫無比賽紀錄</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">No match history yet</p>
         ) : (
           <div className="space-y-3">
             {recentList.map((match: RecentMatch) => {
@@ -289,7 +289,7 @@ export default function Stats() {
                 : Number.parseFloat(formatEther(BigInt(match.stakeAmountWei ?? '0')))
               const stakeDisplay = Number.isFinite(stakeDOT) ? stakeDOT.toFixed(2) : '0.00'
               const statusClass = statusClasses[match.status] ?? statusClasses[0]
-              const statusLabel = statusLabels[match.status] ?? '未知'
+              const statusLabel = statusLabels[match.status] ?? 'Unknown'
               const hasWinner = match.winner && match.winner !== ZERO_ADDRESS
               return (
                 <div
@@ -301,7 +301,7 @@ export default function Stats() {
                       {match.description || `Match #${match.id}`}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                      押注: {stakeDisplay} DOT · 更新於 {formatTimestamp(match.updatedAt)}
+                      Stake: {stakeDisplay} ETH · Updated {formatTimestamp(match.updatedAt)}
                     </p>
                   </div>
                   <div className="text-right">
@@ -310,7 +310,7 @@ export default function Stats() {
                     </span>
                     {hasWinner && (
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-mono">
-                        贏家: {formatAddress(match.winner)}
+                        Winner: {formatAddress(match.winner)}
                       </p>
                     )}
                   </div>
@@ -323,5 +323,3 @@ export default function Stats() {
     </div>
   )
 }
-
-console.log('📊 Stats Page Loaded - v0.4.0-live')

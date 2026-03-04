@@ -7,28 +7,29 @@ import "@openzeppelin/contracts/utils/Pausable.sol";
 
 /**
  * @title DuelPlatform
- * @dev 去中心化對賭平台智能合約 - MVP 版本
- * @notice 版本: v0.1.0-mvp
+ * @dev Decentralized 1v1 prediction/duel smart contract
+ * @author DotDuel Team
+ * @notice Version: v2.0.0
  */
 contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
-    // ============ 版本信息 ============
-    string public constant VERSION = "v0.1.0-mvp";
-    
-    // ============ 枚舉定義 ============
-    
+
+    string public constant VERSION = "v2.0.0";
+
+    // ============ Enums ============
+
     enum MatchMode {
-        REFEREE,    // 裁判模式
-        API         // API 自動模式
+        REFEREE,    // Referee mode - human judge
+        API         // Oracle/API auto mode
     }
-    
+
     enum MatchStatus {
-        WAITING,        // 等待對手
-        IN_PROGRESS,    // 進行中
-        COMPLETED,      // 已完成
-        CANCELLED       // 已取消
+        WAITING,        // Waiting for opponent
+        IN_PROGRESS,    // Match in progress
+        COMPLETED,      // Match completed
+        CANCELLED       // Match cancelled
     }
     
-    // ============ 數據結構 ============
+    // ============ Data Structures ============
     
     struct Match {
         uint256 matchId;
@@ -53,7 +54,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
         uint256 totalWon;
     }
     
-    // ============ 狀態變量 ============
+    // ============ State Variables ============
     
     uint256 public matchCounter;
     mapping(uint256 => Match) public matches;
@@ -66,16 +67,16 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
     
     address public platformWallet;
     
-    // 手續費率 (使用基點: 1 = 0.01%)
+    // Fee rates (basis points: 1 = 0.01%)
     uint256 public constant REFEREE_FEE_RATE = 300;  // 3%
     uint256 public constant PLATFORM_FEE_RATE = 50;  // 0.5%
     uint256 public constant FEE_DENOMINATOR = 10000;
     
-    // 時間限制
+    // Time constraints
     uint256 public constant MIN_MATCH_DURATION = 1 hours;
     uint256 public constant MAX_MATCH_DURATION = 30 days;
     
-    // ============ 事件定義 ============
+    // ============ Events ============
     
     event MatchCreated(
         uint256 indexed matchId,
@@ -114,7 +115,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
     event OracleUpdated(address indexed oldOracle, address indexed newOracle);
     event PlatformWalletUpdated(address indexed oldWallet, address indexed newWallet);
     
-    // ============ 修飾符 ============
+    // ============ Modifiers ============
     
     modifier onlyOracle() {
         require(
@@ -129,7 +130,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
         _;
     }
     
-    // ============ 構造函數 ============
+    // ============ Constructor ============
     
     constructor(address _platformWallet, address _oracleAddress) Ownable(msg.sender) {
         require(_platformWallet != address(0), "Invalid platform wallet");
@@ -143,10 +144,10 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
         emit OracleUpdated(address(0), _oracleAddress);
     }
     
-    // ============ 核心功能 ============
-    
+    // ============ Core Functions ============
+
     /**
-     * @dev 創建新比賽
+     * @dev Create a new match/duel
      */
     function createMatch(
         MatchMode _mode,
@@ -162,13 +163,13 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
         require(_endTime - _startTime >= MIN_MATCH_DURATION, "Match duration too short");
         require(_endTime - _startTime <= MAX_MATCH_DURATION, "Match duration too long");
         
-        // 模式2必須提供外部比賽ID
+        // API mode requires external match ID
         if (_mode == MatchMode.API) {
             require(bytes(_externalMatchId).length > 0, "External match ID required for API mode");
             require(externalMatchIds[_externalMatchId] == 0, "External match ID already used");
         }
         
-        // 如果創建者同時加入，需要支付押注金額
+        // If creator also joins, they must pay the stake amount
         if (msg.value > 0) {
             require(msg.value == _stakeAmount, "Incorrect stake amount");
         }
@@ -187,7 +188,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
         newMatch.description = _description;
         newMatch.externalMatchId = _externalMatchId;
         
-        // 如果創建者同時加入
+        // If creator joins immediately
         if (msg.value > 0) {
             newMatch.participants[0] = msg.sender;
             userMatches[msg.sender].push(matchId);
@@ -204,7 +205,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
     }
     
     /**
-     * @dev 加入比賽
+     * @dev Join an existing match
      */
     function joinMatch(uint256 _matchId) 
         external 
@@ -223,7 +224,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
             "Already joined"
         );
         
-        // 找到空位
+        // Find empty slot
         uint8 position;
         if (matchData.participants[0] == address(0)) {
             matchData.participants[0] = msg.sender;
@@ -238,7 +239,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
         userMatches[msg.sender].push(_matchId);
         emit ParticipantJoined(_matchId, msg.sender, position);
         
-        // 如果兩個參與者都已加入，比賽開始
+        // If both participants joined, start the match
         if (matchData.participants[0] != address(0) && matchData.participants[1] != address(0)) {
             matchData.status = MatchStatus.IN_PROGRESS;
             emit MatchStarted(
@@ -251,7 +252,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
     }
     
     /**
-     * @dev 裁判提交結果（模式1）
+     * @dev Submit result by referee (Mode 1)
      */
     function submitResultByReferee(uint256 _matchId, address _winner)
         external
@@ -275,7 +276,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
     }
     
     /**
-     * @dev Oracle 提交結果（模式2）
+     * @dev Submit result by oracle (Mode 2)
      */
     function submitResultByOracle(uint256 _matchId, address _winner)
         external
@@ -299,7 +300,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
     }
     
     /**
-     * @dev 內部結算函數
+     * @dev Internal settlement function
      */
     function _settleMatch(uint256 _matchId) internal {
         Match storage matchData = matches[_matchId];
@@ -310,40 +311,40 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
         uint256 winnerAmount = 0;
         
         if (matchData.mode == MatchMode.REFEREE) {
-            // 模式1：裁判3% + 平台0.5%
+            // Mode 1: Referee 3% + Platform 0.5%
             refereeFee = (totalPool * REFEREE_FEE_RATE) / FEE_DENOMINATOR;
             platformFee = (totalPool * PLATFORM_FEE_RATE) / FEE_DENOMINATOR;
             winnerAmount = totalPool - refereeFee - platformFee;
             
-            // 轉賬給裁判
+            // Transfer to referee
             (bool refereeSuccess, ) = payable(matchData.referee).call{value: refereeFee}("");
             require(refereeSuccess, "Referee transfer failed");
         } else {
-            // 模式2：平台0.5%
+            // Mode 2: Platform 0.5%
             platformFee = (totalPool * PLATFORM_FEE_RATE) / FEE_DENOMINATOR;
             winnerAmount = totalPool - platformFee;
         }
         
-        // 轉賬給平台
+        // Transfer to platform
         (bool platformSuccess, ) = payable(platformWallet).call{value: platformFee}("");
         require(platformSuccess, "Platform transfer failed");
         
-        // 轉賬給贏家
+        // Transfer to winner
         (bool winnerSuccess, ) = payable(matchData.winner).call{value: winnerAmount}("");
         require(winnerSuccess, "Winner transfer failed");
         
-        // 更新狀態
+        // Update status
         matchData.status = MatchStatus.COMPLETED;
         matchData.isSettled = true;
         
-        // 更新用戶統計
+        // Update user statistics
         _updateUserStats(matchData);
         
         emit MatchSettled(_matchId, matchData.winner, winnerAmount, refereeFee, platformFee);
     }
     
     /**
-     * @dev 取消比賽
+     * @dev Cancel a match
      */
     function cancelMatch(uint256 _matchId)
         external
@@ -361,7 +362,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
             "Not authorized to cancel"
         );
         
-        // 退還已加入者的押注
+        // Refund participants' stakes
         for (uint8 i = 0; i < 2; i++) {
             if (matchData.participants[i] != address(0)) {
                 (bool success, ) = payable(matchData.participants[i]).call{
@@ -376,7 +377,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
     }
     
     /**
-     * @dev 更新用戶統計
+     * @dev Update user statistics after match settlement
      */
     function _updateUserStats(Match storage matchData) internal {
         address winner = matchData.winner;
@@ -384,7 +385,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
             ? matchData.participants[1] 
             : matchData.participants[0];
         
-        // 更新贏家統計
+        // Update winner stats
         UserStats storage winnerStats = userStats[winner];
         winnerStats.totalMatches++;
         winnerStats.wonMatches++;
@@ -399,13 +400,13 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
         }
         winnerStats.totalWon += winnerAmount;
         
-        // 更新輸家統計
+        // Update loser stats
         UserStats storage loserStats = userStats[loser];
         loserStats.totalMatches++;
         loserStats.totalStaked += matchData.stakeAmount;
     }
     
-    // ============ 查詢函數 ============
+    // ============ View Functions ============
     
     function getMatch(uint256 _matchId) external view matchExists(_matchId) returns (Match memory) {
         return matches[_matchId];
@@ -425,7 +426,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
         return matches[matchId];
     }
     
-    // ============ 管理函數 ============
+    // ============ Admin Functions ============
     
     function setOracle(address _oracleAddress) external onlyOwner {
         require(_oracleAddress != address(0), "Invalid oracle address");
@@ -452,7 +453,7 @@ contract DuelPlatform is Ownable, ReentrancyGuard, Pausable {
         _unpause();
     }
     
-    // ============ 接收函數 ============
+    // ============ Receive ============
     
     receive() external payable {
         revert("Direct transfers not allowed");

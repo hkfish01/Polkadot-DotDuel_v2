@@ -27,6 +27,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
+  // Matches
   listMatches: (params: { limit?: number; offset?: number; status?: number; mode?: number } = {}) => {
     const query = new URLSearchParams()
     if (params.limit) query.append('limit', params.limit.toString())
@@ -40,5 +41,24 @@ export const api = {
   getPlatformStats: () => request<ApiResponse<any>>('/api/stats/platform'),
   getRecentMatches: (limit = 5) => request<ApiResponse<any>>(`/api/stats/recent?limit=${limit}`),
   getUserStats: (address: string) => request<ApiResponse<any>>(`/api/users/${address}/stats`),
-  getUserMatches: (address: string) => request<ApiResponse<any>>(`/api/users/${address}/matches`)
+  getUserMatches: (address: string) => request<ApiResponse<any>>(`/api/users/${address}/matches`),
+
+  // Tournaments
+  listTournaments: (params: { limit?: number; offset?: number; status?: number } = {}) => {
+    const query = new URLSearchParams()
+    if (params.limit) query.append('limit', params.limit.toString())
+    if (params.offset) query.append('offset', params.offset.toString())
+    if (typeof params.status === 'number') query.append('status', params.status.toString())
+    return request<ApiResponse<any>>(`/api/tournaments?${query.toString()}`)
+  },
+  getTournament: (id: number) => request<ApiResponse<any>>(`/api/tournaments/${id}`),
+  getTournamentBracket: (id: number, round: number) =>
+    request<ApiResponse<any>>(`/api/tournaments/${id}/bracket/${round}`),
+  getTournamentPredictions: (id: number) =>
+    request<ApiResponse<any>>(`/api/tournaments/${id}/predictions`),
+  getTournamentResults: (id: number) =>
+    request<ApiResponse<any>>(`/api/tournaments/${id}/results`),
+  getTournamentStats: () => request<ApiResponse<any>>('/api/tournaments/stats'),
+  getPlayerTournamentStats: (address: string) =>
+    request<ApiResponse<any>>(`/api/tournaments/player/${address}`),
 }

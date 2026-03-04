@@ -3,7 +3,7 @@ import { getOracleService } from '../services/oracle.js'
 
 const router = express.Router()
 
-// GET /api/oracle/status - 獲取 Oracle 狀態
+// GET /api/oracle/status - Get Oracle status
 router.get('/status', (req, res) => {
   try {
     const oracle = getOracleService()
@@ -19,7 +19,7 @@ router.get('/status', (req, res) => {
   }
 })
 
-// POST /api/oracle/start - 啟動 Oracle 服務
+// POST /api/oracle/start - Start Oracle service
 router.post('/start', async (req, res) => {
   try {
     const oracle = getOracleService()
@@ -34,7 +34,7 @@ router.post('/start', async (req, res) => {
   }
 })
 
-// POST /api/oracle/stop - 停止 Oracle 服務
+// POST /api/oracle/stop - Stop Oracle service
 router.post('/stop', async (req, res) => {
   try {
     const oracle = getOracleService()
@@ -49,7 +49,7 @@ router.post('/stop', async (req, res) => {
   }
 })
 
-// POST /api/oracle/settle - 手動觸發結算
+// POST /api/oracle/settle - Manually trigger settlement
 router.post('/settle', async (req, res) => {
   try {
     const { matchId, externalMatchId } = req.body
@@ -79,7 +79,7 @@ router.post('/settle', async (req, res) => {
   }
 })
 
-// POST /api/oracle/submit - 直接提交結果
+// POST /api/oracle/submit - Submit result directly
 router.post('/submit', async (req, res) => {
   try {
     const { matchId, winner } = req.body
