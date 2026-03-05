@@ -43,6 +43,12 @@ const config: HardhatUserConfig = {
       gas: 3000000,
       gasPrice: 1000000000,
     },
+    // Polkadot Hub TestNet (Revive / PAS)
+    polkadotHub: {
+      url: process.env.POLKADOT_HUB_RPC_URL || "https://eth-rpc-testnet.polkadot.io/",
+      chainId: 420420417,
+      accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [],
+    },
   },
   etherscan: {
     apiKey: {

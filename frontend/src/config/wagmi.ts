@@ -76,12 +76,40 @@ export const mantleSepolia = {
   testnet: true,
 }
 
+// Polkadot Hub TestNet (Revive — target for hackathon)
+export const polkadotHub = {
+  id: 420420417,
+  name: 'Polkadot Hub TestNet',
+  network: 'polkadot-hub-testnet',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'PAS',
+    symbol: 'PAS',
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://eth-rpc-testnet.polkadot.io/'],
+    },
+    public: {
+      http: ['https://eth-rpc-testnet.polkadot.io/'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Blockscout',
+      url: 'https://blockscout-testnet.polkadot.io',
+    },
+  },
+  testnet: true,
+}
+
 // Select network based on environment variable
 const rpcUrl = import.meta.env.VITE_RPC_URL || ''
 const isLocalhost = rpcUrl.includes('127.0.0.1') || rpcUrl.includes('localhost')
+const isPolkadotHub = rpcUrl.includes('polkadot.io')
 const useTestnet = import.meta.env.VITE_USE_TESTNET === 'true'
 
-export const currentChain = isLocalhost ? localhost : useTestnet ? mantleSepolia : mantleMainnet
+export const currentChain = isLocalhost ? localhost : isPolkadotHub ? polkadotHub : useTestnet ? mantleSepolia : mantleMainnet
 
 // Wagmi config
 export const config = createConfig({
@@ -93,6 +121,7 @@ export const config = createConfig({
     [localhost.id]: http(),
     [mantleMainnet.id]: http(),
     [mantleSepolia.id]: http(),
+    [polkadotHub.id]: http(),
   },
 })
 

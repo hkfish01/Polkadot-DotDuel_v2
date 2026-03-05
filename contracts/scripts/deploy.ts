@@ -19,12 +19,11 @@ async function main() {
 
   const balance = await ethers.provider.getBalance(deployer.address);
   const network = await ethers.provider.getNetwork();
-  console.log("💰 Balance:", ethers.formatEther(balance), "ETH");
+  console.log("💰 Balance:", ethers.formatEther(balance), "MNT/ETH");
   console.log("🌐 Network:", network.name, `(chainId: ${network.chainId})\n`);
 
   if (balance === 0n) {
-    console.error("❌ Deployer has 0 balance. Please fund the account first.");
-    process.exit(1);
+    console.warn("⚠️  Balance shows 0 — attempting deployment anyway (faucet may still be processing)...\n");
   }
 
   const platformWallet = process.env.PLATFORM_WALLET || deployer.address;
