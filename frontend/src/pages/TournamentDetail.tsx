@@ -51,15 +51,13 @@ export default function TournamentDetail() {
     registerForTournament,
     placePrediction,
     claimPrediction,
-    isRegisterPending,
-    isPredictionPending,
-    isClaimPending,
+    isPending,
   } = useTournamentContract()
 
   const handleRegister = async () => {
     if (!tournament) return
     try {
-      await registerForTournament(tournamentId, tournament.entryFee)
+      await registerForTournament(tournamentId, BigInt(tournament.entryFee || 0))
       toast.success('Successfully registered for tournament!')
     } catch (err: any) {
       toast.error(err?.message?.slice(0, 100) || 'Registration failed')
@@ -72,7 +70,7 @@ export default function TournamentDetail() {
       return
     }
     try {
-      const weiAmount = parseEther(predictionAmount).toString()
+      const weiAmount = parseEther(predictionAmount)
       await placePrediction(tournamentId, selectedPlayer, weiAmount)
       toast.success('Prediction placed!')
       setPredictionAmount('')
@@ -183,10 +181,10 @@ export default function TournamentDetail() {
         {canRegister && (
           <button
             onClick={handleRegister}
-            disabled={isRegisterPending}
+            disabled={isPending}
             className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 transition-all"
           >
-            {isRegisterPending ? 'Registering...' : `Register (${entryFee.toFixed(3)} ETH)`}
+            {isPending ? 'Registering...' : `Register (${entryFee.toFixed(3)} ETH)`}
           </button>
         )}
         {isRegistered && tournament.status === 0 && (
@@ -197,10 +195,10 @@ export default function TournamentDetail() {
         {tournament.status === 2 && canPredict && (
           <button
             onClick={handleClaimPrediction}
-            disabled={isClaimPending}
+            disabled={isPending}
             className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg font-semibold hover:from-yellow-600 hover:to-orange-700 disabled:opacity-50 transition-all"
           >
-            {isClaimPending ? 'Claiming...' : 'Claim Prediction Rewards'}
+            {isPending ? 'Claiming...' : 'Claim Prediction Rewards'}
           </button>
         )}
       </div>
@@ -245,27 +243,27 @@ export default function TournamentDetail() {
                 Registration deadline: {formatDate(tournament.registrationDeadline)}
               </p>
             </div>
-          ) : bracketData?.matches?.length ? (
+          ) : bracketData?.length ? (
             <div className="space-y-4">
               <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                 Showing Round {tournament.currentRound} of {tournament.totalRounds}
               </div>
-              {bracketData.matches.map((match: any, idx: number) => (
+              {bracketData.map((match: any, idx: number) => (
                 <div
                   key={idx}
                   className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600"
                 >
                   <div className="flex-1">
-                    <div className={`font-mono text-sm ${match.winner?.toLowerCase() === match.player1?.toLowerCase()
+                    <div className={`font-mono text-sm ${match.winner?.toLowerCase() === match.playerOne?.toLowerCase()
                       ? 'text-green-600 font-bold' : 'text-gray-700 dark:text-gray-300'}`}>
-                      {formatAddress(match.player1)}
+                      {formatAddress(match.playerOne)}
                     </div>
                   </div>
                   <div className="px-4 text-gray-400 font-bold">VS</div>
                   <div className="flex-1 text-right">
-                    <div className={`font-mono text-sm ${match.winner?.toLowerCase() === match.player2?.toLowerCase()
+                    <div className={`font-mono text-sm ${match.winner?.toLowerCase() === match.playerTwo?.toLowerCase()
                       ? 'text-green-600 font-bold' : 'text-gray-700 dark:text-gray-300'}`}>
-                      {formatAddress(match.player2)}
+                      {formatAddress(match.playerTwo)}
                     </div>
                   </div>
                 </div>
@@ -325,10 +323,10 @@ export default function TournamentDetail() {
                 <div className="flex items-end">
                   <button
                     onClick={handlePlacePrediction}
-                    disabled={isPredictionPending || !selectedPlayer || !predictionAmount}
+                    disabled={isPending || !selectedPlayer || !predictionAmount}
                     className="w-full px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-medium hover:from-pink-600 hover:to-purple-700 disabled:opacity-50 transition-all"
                   >
-                    {isPredictionPending ? 'Placing...' : 'Place Prediction'}
+                    {isPending ? 'Placing...' : 'Place Prediction'}
                   </button>
                 </div>
               </div>
@@ -340,9 +338,9 @@ export default function TournamentDetail() {
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
               Prediction Market
             </h2>
-            {predictionData?.predictions?.length ? (
+            {predictionData?.length ? (
               <div className="space-y-3">
-                {predictionData.predictions.map((pred: any, idx: number) => (
+                {predictionData.map((pred: any, idx: number) => (
                   <div
                     key={idx}
                     className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4"
@@ -397,7 +395,7 @@ export default function TournamentDetail() {
                       </span>
                     )}
                   </div>
-                  {tournament.winner?.toLowerCase() === player.toLowerCase() && (
+                  {(tournament as any).winner?.toLowerCase() === player.toLowerCase() && (
                     <Trophy className="text-yellow-500" size={20} />
                   )}
                 </div>
@@ -442,14 +440,14 @@ export default function TournamentDetail() {
           <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
             <span className="text-gray-500">Prediction Pool</span>
             <span className="text-gray-700 dark:text-gray-300">
-              {Number(formatEther(BigInt(tournament.predictionPool || 0))).toFixed(3)} ETH
+              {Number(formatEther(BigInt((tournament as any).predictionPool || 0))).toFixed(3)} ETH
             </span>
           </div>
-          {tournament.winner && tournament.winner !== '0x0000000000000000000000000000000000000000' && (
+          {(tournament as any).winner && (tournament as any).winner !== '0x0000000000000000000000000000000000000000' && (
             <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
               <span className="text-gray-500">Winner</span>
               <span className="font-mono text-yellow-600 dark:text-yellow-400 font-bold">
-                {formatAddress(tournament.winner)}
+                {formatAddress((tournament as any).winner)}
               </span>
             </div>
           )}

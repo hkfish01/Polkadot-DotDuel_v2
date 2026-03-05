@@ -15,7 +15,7 @@ const bracketOptions = [
 export default function CreateTournament() {
   const navigate = useNavigate()
   const { isConnected } = useAccount()
-  const { createTournament, isCreatePending } = useTournamentContract()
+  const { createTournament, isPending } = useTournamentContract()
 
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -51,7 +51,7 @@ export default function CreateTournament() {
       const now = Math.floor(Date.now() / 1000)
       const regDeadline = now + registrationDays * 86400
       const startTime = now + startDays * 86400
-      const entryFeeWei = parseEther(entryFee).toString()
+      const entryFeeWei = parseEther(entryFee)
 
       await createTournament(name, description, bracketSize, entryFeeWei, regDeadline, startTime)
       toast.success('Tournament created successfully!')
@@ -268,10 +268,10 @@ export default function CreateTournament() {
         <div className="flex gap-4">
           <button
             type="submit"
-            disabled={isCreatePending || !isConnected}
+            disabled={isPending || !isConnected}
             className="flex-1 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-purple-700 disabled:opacity-50 transition-all text-lg"
           >
-            {isCreatePending
+            {isPending
               ? 'Creating Tournament...'
               : !isConnected
               ? 'Connect Wallet to Create'

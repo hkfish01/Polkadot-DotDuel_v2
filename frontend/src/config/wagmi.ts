@@ -1,6 +1,27 @@
 import { http, createConfig } from 'wagmi'
 import { injected } from 'wagmi/connectors'
 
+// Hardhat / Localhost config (for local development)
+export const localhost = {
+  id: 1337,
+  name: 'Localhost',
+  network: 'localhost',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'ETH',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    default: {
+      http: ['http://127.0.0.1:8545'],
+    },
+    public: {
+      http: ['http://127.0.0.1:8545'],
+    },
+  },
+  testnet: true,
+}
+
 // Mantle Mainnet config (placeholder — will be replaced with Revive chain)
 export const mantleMainnet = {
   id: 5000,
@@ -56,8 +77,11 @@ export const mantleSepolia = {
 }
 
 // Select network based on environment variable
+const rpcUrl = import.meta.env.VITE_RPC_URL || ''
+const isLocalhost = rpcUrl.includes('127.0.0.1') || rpcUrl.includes('localhost')
 const useTestnet = import.meta.env.VITE_USE_TESTNET === 'true'
-export const currentChain = useTestnet ? mantleSepolia : mantleMainnet
+
+export const currentChain = isLocalhost ? localhost : useTestnet ? mantleSepolia : mantleMainnet
 
 // Wagmi config
 export const config = createConfig({
@@ -66,6 +90,7 @@ export const config = createConfig({
     injected({ target: 'metaMask' }),
   ],
   transports: {
+    [localhost.id]: http(),
     [mantleMainnet.id]: http(),
     [mantleSepolia.id]: http(),
   },
