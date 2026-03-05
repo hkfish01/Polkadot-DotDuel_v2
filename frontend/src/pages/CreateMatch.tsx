@@ -153,7 +153,7 @@ export default function CreateMatch() {
           <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
             <div className="flex items-center gap-2">
               <DollarSign size={16} />
-              Stake Amount (ETH)
+              Stake Amount (PAS)
             </div>
           </label>
           <input

@@ -154,11 +154,11 @@ export default function TournamentDetail() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div>
               <p className="text-sm text-white/70 mb-1">Prize Pool</p>
-              <p className="text-2xl font-bold">{prizePool.toFixed(3)} ETH</p>
+              <p className="text-2xl font-bold">{prizePool.toFixed(3)} PAS</p>
             </div>
             <div>
               <p className="text-sm text-white/70 mb-1">Entry Fee</p>
-              <p className="text-2xl font-bold">{entryFee.toFixed(3)} ETH</p>
+              <p className="text-2xl font-bold">{entryFee.toFixed(3)} PAS</p>
             </div>
             <div>
               <p className="text-sm text-white/70 mb-1">Players</p>
@@ -184,7 +184,7 @@ export default function TournamentDetail() {
             disabled={isPending}
             className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 transition-all"
           >
-            {isPending ? 'Registering...' : `Register (${entryFee.toFixed(3)} ETH)`}
+            {isPending ? 'Registering...' : `Register (${entryFee.toFixed(3)} PAS)`}
           </button>
         )}
         {isRegistered && tournament.status === 0 && (
@@ -308,7 +308,7 @@ export default function TournamentDetail() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Amount (ETH)
+                    Amount (PAS)
                   </label>
                   <input
                     type="number"
@@ -352,7 +352,7 @@ export default function TournamentDetail() {
                     </div>
                     <div className="text-right">
                       <span className="text-sm font-semibold text-pink-600 dark:text-pink-400">
-                        {Number(formatEther(BigInt(pred.totalAmount || 0))).toFixed(3)} ETH
+                        {Number(formatEther(BigInt(pred.totalAmount || 0))).toFixed(3)} PAS
                       </span>
                       <span className="text-xs text-gray-500 ml-2">
                         ({pred.betCount} bets)

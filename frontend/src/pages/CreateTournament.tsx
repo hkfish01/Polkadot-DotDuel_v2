@@ -155,7 +155,7 @@ export default function CreateTournament() {
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-2">
               <DollarSign size={16} className="text-pink-500" />
-              Entry Fee (ETH) *
+              Entry Fee (PAS) *
             </label>
             <input
               type="number"
@@ -233,7 +233,7 @@ export default function CreateTournament() {
             </div>
             <div>
               <span className="text-gray-500">Entry Fee:</span>{' '}
-              <span className="text-gray-900 dark:text-white font-medium">{entryFee} ETH</span>
+              <span className="text-gray-900 dark:text-white font-medium">{entryFee} PAS</span>
             </div>
             <div>
               <span className="text-gray-500">Max Prize Pool:</span>{' '}
@@ -243,7 +243,7 @@ export default function CreateTournament() {
                   [4, 8, 16][bracketSize] *
                   0.975
                 ).toFixed(3)}{' '}
-                ETH
+                PAS
               </span>
             </div>
             <div>

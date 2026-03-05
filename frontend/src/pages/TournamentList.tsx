@@ -200,7 +200,7 @@ export default function TournamentList() {
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400">Prize Pool</p>
                       <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                        {Number(formatEther(BigInt(tournament.prizePool))).toFixed(3)} ETH
+                        {Number(formatEther(BigInt(tournament.prizePool))).toFixed(3)} PAS
                       </p>
                     </div>
                   </div>
@@ -209,7 +209,7 @@ export default function TournamentList() {
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400">Entry Fee</p>
                       <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                        {Number(formatEther(BigInt(tournament.entryFee))).toFixed(3)} ETH
+                        {Number(formatEther(BigInt(tournament.entryFee))).toFixed(3)} PAS
                       </p>
                     </div>
                   </div>

@@ -118,7 +118,7 @@ export default function Home() {
             <div className="text-pink-100">Total Duels</div>
           </div>
           <div>
-            <div className="text-4xl md:text-5xl font-bold mb-2">{totalVolumeETH.toFixed(2)} ETH</div>
+            <div className="text-4xl md:text-5xl font-bold mb-2">{totalVolumeETH.toFixed(2)} PAS</div>
             <div className="text-pink-100">Total Volume</div>
           </div>
           <div>
@@ -136,7 +136,7 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             { step: '1', title: 'Connect Wallet', desc: 'Connect MetaMask to the Polkadot network' },
-            { step: '2', title: 'Create or Join', desc: 'Stake ETH on a 1v1 duel or join a tournament bracket' },
+            { step: '2', title: 'Create or Join', desc: 'Stake PAS on a 1v1 duel or join a tournament bracket' },
             { step: '3', title: 'Auto Settlement', desc: 'Smart contract distributes winnings automatically after result' },
           ].map((item) => (
             <div key={item.step} className="text-center">

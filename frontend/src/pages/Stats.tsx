@@ -161,7 +161,7 @@ export default function Stats() {
           </div>
           <p className="text-sm opacity-90 mb-1">Total Volume</p>
           <p className="text-4xl font-bold">{statsLoading && !platformStats ? '...' : totalVolumeDisplay}</p>
-          <p className="text-xs opacity-75 mt-2">ETH</p>
+          <p className="text-xs opacity-75 mt-2">PAS</p>
         </div>
       </div>
 
@@ -259,7 +259,7 @@ export default function Stats() {
                         <span className="text-sm font-semibold text-green-600">{player.winRate.toFixed(1)}%</span>
                       </td>
                       <td className="py-4 px-4 text-right">
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{volumeDisplay} ETH</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{volumeDisplay} PAS</span>
                       </td>
                     </tr>
                   )
@@ -301,7 +301,7 @@ export default function Stats() {
                       {match.description || `Match #${match.id}`}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Stake: {stakeDisplay} ETH · Updated {formatTimestamp(match.updatedAt)}
+                      Stake: {stakeDisplay} PAS · Updated {formatTimestamp(match.updatedAt)}
                     </p>
                   </div>
                   <div className="text-right">

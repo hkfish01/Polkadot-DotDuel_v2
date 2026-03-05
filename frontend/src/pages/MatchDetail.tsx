@@ -93,7 +93,7 @@ export default function MatchDetail() {
     }
 
     if (!winnerAddress.startsWith('0x') || winnerAddress.length !== 42) {
-      toast.error('Please enter a valid Ethereum address')
+      toast.error('Please enter a valid wallet address')
       return
     }
 
@@ -247,10 +247,10 @@ export default function MatchDetail() {
                 Stake Amount
               </p>
               <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                {formatEther(stakeAmountWei)} ETH
+                {formatEther(stakeAmountWei)} PAS
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Total Prize Pool: {formatEther(totalPoolWei)} ETH
+                Total Prize Pool: {formatEther(totalPoolWei)} PAS
               </p>
             </div>
           </div>
@@ -371,7 +371,7 @@ export default function MatchDetail() {
               Join Match
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Stake {formatEther(stakeAmountWei)} ETH to join
+              Stake {formatEther(stakeAmountWei)} PAS to join
             </p>
             <button
               onClick={handleJoinMatch}

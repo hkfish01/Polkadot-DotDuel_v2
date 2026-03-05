@@ -205,7 +205,7 @@ export default function MatchList() {
 
       <div className="mb-6 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-blue-500/10 dark:from-pink-500/20 dark:via-purple-500/20 dark:to-blue-500/20 border border-pink-500/30 dark:border-pink-500/40 rounded-xl p-4">
         <p className="text-sm text-pink-700 dark:text-pink-300 mb-1">Total Stake Volume</p>
-        <p className="text-2xl font-semibold text-pink-600 dark:text-pink-200">{totalVolumeDisplay} ETH</p>
+        <p className="text-2xl font-semibold text-pink-600 dark:text-pink-200">{totalVolumeDisplay} PAS</p>
       </div>
 
       {error && (
