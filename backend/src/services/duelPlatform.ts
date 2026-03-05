@@ -19,7 +19,9 @@ const ABI = [
 ]
 
 const provider = new ethers.JsonRpcProvider(RPC_URL)
-const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider)
+const contract = CONTRACT_ADDRESS
+  ? new ethers.Contract(CONTRACT_ADDRESS, ABI, provider)
+  : null
 
 const CACHE_TTL = 30_000 // 30 seconds
 
@@ -119,6 +121,7 @@ const cacheMatch = (matchId: number, match: MatchDTO) => {
 }
 
 export const getMatchCount = async (): Promise<number> => {
+  if (!contract) return 0
   const now = Date.now()
   if (matchCounterCache && now - matchCounterCache.cachedAt < CACHE_TTL) {
     return matchCounterCache.value
@@ -131,6 +134,7 @@ export const getMatchCount = async (): Promise<number> => {
 }
 
 export const getMatchById = async (matchId: number): Promise<MatchDTO | null> => {
+  if (!contract) return null
   const cached = matchCache.get(matchId)
   const now = Date.now()
   if (cached && now - cached.cachedAt < CACHE_TTL) {
@@ -197,6 +201,7 @@ export const listMatches = async ({ limit, offset, status, mode }: ListMatchesOp
 }
 
 export const getUserStats = async (address: string): Promise<UserStatsDTO> => {
+  if (!contract) return { address: normalizeAddress(address), totalMatches: 0, wonMatches: 0, totalStakedWei: '0', totalWonWei: '0' }
   const stats = await contract.getUserStats(address)
   const totalMatches = Number(stats?.totalMatches ?? stats?.[0] ?? 0)
   const wonMatches = Number(stats?.wonMatches ?? stats?.[1] ?? 0)
@@ -213,6 +218,7 @@ export const getUserStats = async (address: string): Promise<UserStatsDTO> => {
 }
 
 export const getUserMatchIds = async (address: string): Promise<number[]> => {
+  if (!contract) return []
   const matches: bigint[] = await contract.getUserMatches(address)
   return matches.map((id) => Number(id)).filter((id) => !Number.isNaN(id) && id >= 0)
 }
