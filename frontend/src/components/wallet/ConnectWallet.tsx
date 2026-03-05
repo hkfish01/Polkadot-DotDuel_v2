@@ -6,6 +6,11 @@ export default function ConnectWallet() {
   const { connect, connectors, isPending } = useConnect()
   const { disconnect } = useDisconnect()
 
+  // Find priority connector (MetaMask or Injected)
+  const primaryConnector = connectors.find(c => c.id === 'io.metamask') || 
+                          connectors.find(c => c.id === 'injected') || 
+                          connectors[0];
+
   const formatAddress = (addr: string) => {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`
   }
@@ -33,10 +38,10 @@ export default function ConnectWallet() {
 
   return (
     <div className="flex items-center gap-2">
-      {connectors.map((connector) => (
+      {primaryConnector && (
         <button
-          key={connector.id}
-          onClick={() => connect({ connector })}
+          key={primaryConnector.id}
+          onClick={() => connect({ connector: primaryConnector })}
           disabled={isPending}
           className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-medium hover:from-pink-600 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -52,7 +57,7 @@ export default function ConnectWallet() {
             </>
           )}
         </button>
-      ))}
+      )}
     </div>
   )
 }
