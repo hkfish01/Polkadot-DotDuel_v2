@@ -16,6 +16,8 @@ services:
       - DATABASE_URL=${DATABASE_URL:-}
       - DEPLOYER_PRIVATE_KEY=${DEPLOYER_PRIVATE_KEY:-}
       - RPC_URL=${RPC_URL:-}
+      - CONTRACT_ADDRESS=${CONTRACT_ADDRESS:-0x0000000000000000000000000000000000000001}
+      - TOURNAMENT_ADDRESS=${TOURNAMENT_ADDRESS:-0x0000000000000000000000000000000000000001}
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3000/health').then(r=>{if(!r.ok)throw 1}).catch(()=>process.exit(1))"]
       interval: 10s

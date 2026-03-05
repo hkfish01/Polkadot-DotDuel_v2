@@ -8,7 +8,7 @@ const RPC_URL = process.env.RPC_URL || 'https://rpc.sepolia.mantle.xyz'
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS
 
 if (!CONTRACT_ADDRESS || CONTRACT_ADDRESS === ethers.ZeroAddress) {
-  throw new Error('CONTRACT_ADDRESS is not configured. Please set it in backend/.env')
+  console.warn('⚠️  CONTRACT_ADDRESS is not configured. Duel features will return empty data.')
 }
 
 const ABI = [
