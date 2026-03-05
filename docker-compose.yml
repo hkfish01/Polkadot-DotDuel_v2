@@ -17,10 +17,11 @@ services:
       - DEPLOYER_PRIVATE_KEY=${DEPLOYER_PRIVATE_KEY:-}
       - RPC_URL=${RPC_URL:-}
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/health').then(r=>{if(!r.ok)throw 1}).catch(()=>process.exit(1))"]
       interval: 10s
       timeout: 5s
-      retries: 3
+      retries: 5
+      start_period: 15s
 
   # ── Frontend (production: nginx + built React) ──────────────────────────────
   frontend:
