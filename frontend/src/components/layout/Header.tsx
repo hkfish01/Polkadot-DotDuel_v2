@@ -21,9 +21,7 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
                 <Link to="/" className="flex items-center space-x-2">
-                  <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-xl">DD</span>
-                  </div>
+                  <img src="/dotduel.png" alt="DotDuel" className="w-10 h-10 rounded-lg object-cover" />
                   <div className="hidden sm:block">
                     <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                       DotDuel
