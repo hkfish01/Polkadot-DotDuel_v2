@@ -9,7 +9,7 @@ export default function Header() {
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Duels', href: '/matches' },
-    { name: 'Create Duel', href: '/create' },
+    { name: 'Arena', href: '/arena' },
     { name: 'Tournaments', href: '/tournaments' },
     { name: 'My Duels', href: '/my-matches' },
     { name: 'Stats', href: '/stats' },

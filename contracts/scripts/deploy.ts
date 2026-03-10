@@ -50,12 +50,22 @@ async function main() {
   const tournamentAddress = await tournamentPlatform.getAddress();
   console.log("✅ TournamentPlatform deployed at:", tournamentAddress);
 
+  // Deploy PredictionArena
+  console.log("📦 Deploying PredictionArena...");
+  const PredictionArena = await ethers.getContractFactory("PredictionArena");
+  const predictionArena = await PredictionArena.deploy(platformWallet);
+  await predictionArena.waitForDeployment();
+  const arenaAddress = await predictionArena.getAddress();
+  console.log("✅ PredictionArena deployed at:", arenaAddress);
+
   // Verify versions
   const duelVersion = await duelPlatform.VERSION();
   const tournamentVersion = await tournamentPlatform.VERSION();
+  const arenaVersion = await predictionArena.VERSION();
   console.log("\n📌 Versions:");
   console.log("   DuelPlatform:", duelVersion);
   console.log("   TournamentPlatform:", tournamentVersion);
+  console.log("   PredictionArena:", arenaVersion);
 
   // Verify config
   const storedPlatformWallet = await duelPlatform.platformWallet();
@@ -66,15 +76,16 @@ async function main() {
   console.log("\n" + "=".repeat(60));
   console.log("🎉 DEPLOYMENT COMPLETE");
   console.log("=".repeat(60));
-  console.log("DuelPlatform:      ", duelAddress);
-  console.log("TournamentPlatform:", tournamentAddress);
-  console.log("Deployer:          ", deployer.address);
-  console.log("Platform Wallet:   ", storedPlatformWallet);
-  console.log("Oracle:            ", storedOracleAddress);
+  console.log("DuelPlatform:       ", duelAddress);
+  console.log("TournamentPlatform: ", tournamentAddress);
+  console.log("PredictionArena:    ", arenaAddress);
+  console.log("Deployer:           ", deployer.address);
+  console.log("Platform Wallet:    ", storedPlatformWallet);
+  console.log("Oracle:             ", storedOracleAddress);
   console.log("=".repeat(60));
   console.log("\n🔧 Next steps:");
-  console.log("1. Update frontend config (VITE_CONTRACT_ADDRESS, VITE_TOURNAMENT_ADDRESS)");
-  console.log("2. Update backend config (CONTRACT_ADDRESS, TOURNAMENT_ADDRESS)");
+  console.log("1. Update frontend config (VITE_CONTRACT_ADDRESS, VITE_TOURNAMENT_ADDRESS, VITE_ARENA_ADDRESS)");
+  console.log("2. Update backend config (CONTRACT_ADDRESS, TOURNAMENT_ADDRESS, ARENA_ADDRESS)");
   console.log("3. Verify contracts on block explorer (optional)");
   console.log("");
 }

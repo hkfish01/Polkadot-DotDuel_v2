@@ -127,9 +127,11 @@ export const config = createConfig({
 
 // Contract address
 export const CONTRACT_ADDRESS = import.meta.env.VITE_CONTRACT_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000'
+export const ARENA_ADDRESS = import.meta.env.VITE_ARENA_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000'
 
 console.log('📋 Wagmi Config Loaded - v0.3.0-mantle')
 console.log('🔗 Contract Address:', CONTRACT_ADDRESS)
+console.log('🔗 Arena Address:', ARENA_ADDRESS)
 console.log('🌐 Network:', currentChain.name)
 console.log('🌐 RPC URL:', currentChain.rpcUrls.default.http[0])
 

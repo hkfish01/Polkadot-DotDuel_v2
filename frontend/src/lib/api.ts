@@ -62,4 +62,16 @@ export const api = {
   getTournamentStats: () => request<ApiResponse<any>>('/api/tournaments/stats'),
   getPlayerTournamentStats: (address: string) =>
     request<ApiResponse<any>>(`/api/tournaments/player/${address}`),
+
+  // Arenas
+  listArenas: (params: { limit?: number; offset?: number; status?: number } = {}) => {
+    const query = new URLSearchParams()
+    if (params.limit) query.append('limit', params.limit.toString())
+    if (params.offset) query.append('offset', params.offset.toString())
+    if (typeof params.status === 'number') query.append('status', params.status.toString())
+    return request<ApiResponse<any>>(`/api/arenas?${query.toString()}`)
+  },
+  getArena: (id: number) => request<ApiResponse<any>>(`/api/arenas/${id}`),
+  getArenaBets: (id: number) => request<ApiResponse<any>>(`/api/arenas/${id}/bets`),
+  getArenaOddsHistory: (id: number) => request<ApiResponse<any>>(`/api/arenas/${id}/odds-history`),
 }

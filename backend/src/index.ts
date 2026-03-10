@@ -6,6 +6,7 @@ import statsRouter from './routes/stats.js'
 import usersRouter from './routes/users.js'
 import oracleRouter from './routes/oracle.js'
 import tournamentsRouter from './routes/tournaments.js'
+import arenaRouter from './routes/arena.js'
 
 dotenv.config()
 
@@ -54,6 +55,7 @@ app.use('/api/stats', statsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/oracle', oracleRouter)
 app.use('/api/tournaments', tournamentsRouter)
+app.use('/api/arenas', arenaRouter)
 
 // 404 handler
 app.use((req, res) => {

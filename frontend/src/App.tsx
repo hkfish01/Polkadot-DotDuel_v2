@@ -13,6 +13,9 @@ import Stats from './pages/Stats'
 import TournamentList from './pages/TournamentList'
 import TournamentDetail from './pages/TournamentDetail'
 import CreateTournament from './pages/CreateTournament'
+import ArenaList from './pages/ArenaList'
+import ArenaDetail from './pages/ArenaDetail'
+import CreateArena from './pages/CreateArena'
 
 const queryClient = new QueryClient()
 
@@ -32,6 +35,9 @@ function App() {
               <Route path="/tournaments" element={<TournamentList />} />
               <Route path="/tournaments/create" element={<CreateTournament />} />
               <Route path="/tournaments/:id" element={<TournamentDetail />} />
+              <Route path="/arena" element={<ArenaList />} />
+              <Route path="/arena/create" element={<CreateArena />} />
+              <Route path="/arena/:id" element={<ArenaDetail />} />
             </Routes>
           </Layout>
           <Toaster 
