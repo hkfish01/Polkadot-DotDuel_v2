@@ -15,8 +15,8 @@ const statusNames = ['Registration', 'In Progress', 'Completed', 'Cancelled']
 const statusColors = [
   'bg-green-500',
   'bg-blue-500',
-  'bg-purple-500',
-  'bg-gray-500',
+  'bg-cyan-500',
+  'bg-white/[0.02]0',
 ]
 
 const formatAddress = (addr: string) => {
@@ -92,7 +92,7 @@ export default function TournamentDetail() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-20">
-        <div className="animate-spin w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full"></div>
+        <div className="animate-spin w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full"></div>
       </div>
     )
   }
@@ -107,7 +107,7 @@ export default function TournamentDetail() {
         <p className="text-gray-600 dark:text-gray-400 mb-4">
           This tournament may not exist or there was an error loading it.
         </p>
-        <Link to="/tournaments" className="text-pink-600 hover:underline">
+        <Link to="/tournaments" className="text-emerald-400 hover:underline">
           ← Back to Tournaments
         </Link>
       </div>
@@ -129,14 +129,14 @@ export default function TournamentDetail() {
       {/* Back Button */}
       <Link
         to="/tournaments"
-        className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-pink-500 mb-6"
+        className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-emerald-400 mb-6"
       >
         <ArrowLeft size={18} />
         Back to Tournaments
       </Link>
 
       {/* Tournament Header */}
-      <div className="bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl p-8 text-white mb-8 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-2xl p-8 text-white mb-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-4">
@@ -204,7 +204,7 @@ export default function TournamentDetail() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
+      <div className="border-b border-white/[0.06] dark:border-white/[0.06] mb-6">
         <nav className="flex gap-6">
           {[
             { key: 'bracket' as const, label: 'Bracket', icon: Swords },
@@ -216,8 +216,8 @@ export default function TournamentDetail() {
               onClick={() => setActiveTab(key)}
               className={`flex items-center gap-2 pb-3 border-b-2 transition-colors ${
                 activeTab === key
-                  ? 'border-pink-500 text-pink-600 dark:text-pink-400'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                  ? 'border-emerald-500 text-emerald-400 dark:text-emerald-400'
+                  : 'border-transparent text-gray-500 hover:text-gray-200 dark:hover:text-gray-300'
               }`}
             >
               <Icon size={18} />
@@ -229,8 +229,8 @@ export default function TournamentDetail() {
 
       {/* Tab Content */}
       {activeTab === 'bracket' && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6">
+          <h2 className="text-xl font-bold text-white text-white mb-4">
             Tournament Bracket
           </h2>
           {tournament.status === 0 ? (
@@ -251,18 +251,18 @@ export default function TournamentDetail() {
               {bracketData.map((match: any, idx: number) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600"
+                  className="flex items-center justify-between bg-white/[0.02] dark:bg-white/[0.05]/50 rounded-lg p-4 border border-white/[0.06] dark:border-white/[0.08]"
                 >
                   <div className="flex-1">
                     <div className={`font-mono text-sm ${match.winner?.toLowerCase() === match.playerOne?.toLowerCase()
-                      ? 'text-green-600 font-bold' : 'text-gray-700 dark:text-gray-300'}`}>
+                      ? 'text-green-600 font-bold' : 'text-gray-200 text-gray-300'}`}>
                       {formatAddress(match.playerOne)}
                     </div>
                   </div>
                   <div className="px-4 text-gray-400 font-bold">VS</div>
                   <div className="flex-1 text-right">
                     <div className={`font-mono text-sm ${match.winner?.toLowerCase() === match.playerTwo?.toLowerCase()
-                      ? 'text-green-600 font-bold' : 'text-gray-700 dark:text-gray-300'}`}>
+                      ? 'text-green-600 font-bold' : 'text-gray-200 text-gray-300'}`}>
                       {formatAddress(match.playerTwo)}
                     </div>
                   </div>
@@ -281,8 +281,8 @@ export default function TournamentDetail() {
         <div className="space-y-6">
           {/* Place Prediction */}
           {canPredict && (
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6">
+              <h2 className="text-xl font-bold text-white text-white mb-4">
                 Place a Prediction
               </h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
@@ -290,13 +290,13 @@ export default function TournamentDetail() {
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-200 text-gray-300 mb-1">
                     Player to Win
                   </label>
                   <select
                     value={selectedPlayer}
                     onChange={(e) => setSelectedPlayer(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
+                    className="w-full px-4 py-2 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-white/[0.05] text-white"
                   >
                     <option value="">Select a player</option>
                     {tournament.players?.map((p: string) => (
@@ -307,7 +307,7 @@ export default function TournamentDetail() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-200 text-gray-300 mb-1">
                     Amount (PAS)
                   </label>
                   <input
@@ -317,14 +317,14 @@ export default function TournamentDetail() {
                     value={predictionAmount}
                     onChange={(e) => setPredictionAmount(e.target.value)}
                     placeholder="0.01"
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
+                    className="w-full px-4 py-2 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-white/[0.05] text-white"
                   />
                 </div>
                 <div className="flex items-end">
                   <button
                     onClick={handlePlacePrediction}
                     disabled={isPending || !selectedPlayer || !predictionAmount}
-                    className="w-full px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-medium hover:from-pink-600 hover:to-purple-700 disabled:opacity-50 transition-all"
+                    className="w-full px-6 py-2 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-lg font-medium hover:from-emerald-600 hover:to-cyan-600 disabled:opacity-50 transition-all"
                   >
                     {isPending ? 'Placing...' : 'Place Prediction'}
                   </button>
@@ -334,8 +334,8 @@ export default function TournamentDetail() {
           )}
 
           {/* Prediction Stats */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+          <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6">
+            <h2 className="text-xl font-bold text-white text-white mb-4">
               Prediction Market
             </h2>
             {predictionData?.length ? (
@@ -343,15 +343,15 @@ export default function TournamentDetail() {
                 {predictionData.map((pred: any, idx: number) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4"
+                    className="flex items-center justify-between bg-white/[0.02] dark:bg-white/[0.05]/50 rounded-lg p-4"
                   >
                     <div>
-                      <span className="font-mono text-sm text-gray-700 dark:text-gray-300">
+                      <span className="font-mono text-sm text-gray-200 text-gray-300">
                         {formatAddress(pred.predictedWinner)}
                       </span>
                     </div>
                     <div className="text-right">
-                      <span className="text-sm font-semibold text-pink-600 dark:text-pink-400">
+                      <span className="text-sm font-semibold text-emerald-400 dark:text-emerald-400">
                         {Number(formatEther(BigInt(pred.totalAmount || 0))).toFixed(3)} PAS
                       </span>
                       <span className="text-xs text-gray-500 ml-2">
@@ -371,8 +371,8 @@ export default function TournamentDetail() {
       )}
 
       {activeTab === 'players' && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6">
+          <h2 className="text-xl font-bold text-white text-white mb-4">
             Registered Players ({tournament.registeredCount}/{tournament.maxPlayers})
           </h2>
           {tournament.players?.length ? (
@@ -380,17 +380,17 @@ export default function TournamentDetail() {
               {tournament.players.map((player: string, idx: number) => (
                 <div
                   key={player}
-                  className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4"
+                  className="flex items-center justify-between bg-white/[0.02] dark:bg-white/[0.05]/50 rounded-lg p-4"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold">
+                    <span className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-white text-sm font-bold">
                       {idx + 1}
                     </span>
-                    <span className="font-mono text-gray-700 dark:text-gray-300">
+                    <span className="font-mono text-gray-200 text-gray-300">
                       {formatAddress(player)}
                     </span>
                     {player.toLowerCase() === address?.toLowerCase() && (
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300">
+                      <span className="px-2 py-0.5 rounded-full text-xs bg-emerald-500/10 dark:bg-emerald-900/40 text-emerald-400 dark:text-emerald-300">
                         You
                       </span>
                     )}
@@ -408,43 +408,43 @@ export default function TournamentDetail() {
       )}
 
       {/* Tournament Info */}
-      <div className="mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+      <div className="mt-8 bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6">
+        <h2 className="text-xl font-bold text-white text-white mb-4">
           Tournament Details
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+          <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/[0.06]">
             <span className="text-gray-500">Organizer</span>
-            <span className="font-mono text-gray-700 dark:text-gray-300">
+            <span className="font-mono text-gray-200 text-gray-300">
               {formatAddress(tournament.organizer)}
             </span>
           </div>
-          <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+          <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/[0.06]">
             <span className="text-gray-500">Bracket Size</span>
-            <span className="text-gray-700 dark:text-gray-300">
+            <span className="text-gray-200 text-gray-300">
               {tournament.maxPlayers} Players
             </span>
           </div>
-          <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+          <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/[0.06]">
             <span className="text-gray-500">Registration Deadline</span>
-            <span className="text-gray-700 dark:text-gray-300">
+            <span className="text-gray-200 text-gray-300">
               {formatDate(tournament.registrationDeadline)}
             </span>
           </div>
-          <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+          <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/[0.06]">
             <span className="text-gray-500">Start Time</span>
-            <span className="text-gray-700 dark:text-gray-300">
+            <span className="text-gray-200 text-gray-300">
               {formatDate(tournament.startTime)}
             </span>
           </div>
-          <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+          <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/[0.06]">
             <span className="text-gray-500">Prediction Pool</span>
-            <span className="text-gray-700 dark:text-gray-300">
+            <span className="text-gray-200 text-gray-300">
               {Number(formatEther(BigInt((tournament as any).predictionPool || 0))).toFixed(3)} ETH
             </span>
           </div>
           {(tournament as any).winner && (tournament as any).winner !== '0x0000000000000000000000000000000000000000' && (
-            <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+            <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/[0.06]">
               <span className="text-gray-500">Winner</span>
               <span className="font-mono text-yellow-600 dark:text-yellow-400 font-bold">
                 {formatAddress((tournament as any).winner)}

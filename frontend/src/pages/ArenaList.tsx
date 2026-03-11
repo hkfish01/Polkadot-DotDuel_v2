@@ -7,7 +7,7 @@ const statusMap: Record<number, { label: string; color: string }> = {
   0: { label: 'Betting Open', color: 'bg-green-500 text-white' },
   1: { label: 'Locked', color: 'bg-yellow-500 text-white' },
   2: { label: 'Resolved', color: 'bg-blue-500 text-white' },
-  3: { label: 'Cancelled', color: 'bg-gray-500 text-white' },
+  3: { label: 'Cancelled', color: 'bg-white/[0.02]0 text-white' },
 }
 
 export default function ArenaList() {
@@ -23,7 +23,7 @@ export default function ArenaList() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-white text-white flex items-center gap-3">
             <Flame className="w-8 h-8 text-orange-500" />
             Prediction Arena
           </h1>
@@ -89,7 +89,7 @@ export default function ArenaList() {
             <Link
               key={arena.id}
               to={`/arena/${arena.id}`}
-              className="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-xl hover:border-orange-400 dark:hover:border-orange-500 transition-all overflow-hidden"
+              className="group bg-white/[0.03] backdrop-blur-sm rounded-2xl shadow-sm border border-white/[0.06] dark:border-white/[0.06] hover:shadow-xl hover:border-orange-400 dark:hover:border-orange-500 transition-all overflow-hidden"
             >
               {/* Header */}
               <div className="p-5 pb-3">
@@ -99,7 +99,7 @@ export default function ArenaList() {
                   </span>
                   <span className="text-xs text-gray-400">#{arena.id}</span>
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-1 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                <h3 className="text-lg font-bold text-white text-white line-clamp-1 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                   {arena.title}
                 </h3>
                 {arena.description && (
@@ -115,7 +115,7 @@ export default function ArenaList() {
                   <span className="text-blue-600 dark:text-blue-400">{arena.sideA}</span>
                   <span className="text-red-600 dark:text-red-400">{arena.sideB}</span>
                 </div>
-                <div className="relative h-6 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div className="relative h-6 bg-white/[0.04] dark:bg-white/[0.05] rounded-full overflow-hidden">
                   <div
                     className="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-500 to-blue-400 rounded-l-full transition-all duration-500"
                     style={{ width: `${pctA}%` }}

@@ -98,9 +98,9 @@ export default function CreateMatch() {
   if (!isConnected) {
     return (
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8 text-center">
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-8 text-center">
           <Trophy className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-2xl font-bold text-white text-white mb-2">
             Connect Your Wallet
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
@@ -114,7 +114,7 @@ export default function CreateMatch() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="text-3xl font-bold text-white text-white mb-2">
           Create Duel
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
@@ -122,10 +122,10 @@ export default function CreateMatch() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 space-y-6">
+      <form onSubmit={handleSubmit} className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6 space-y-6">
         {/* Mode Selection */}
         <div>
-          <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+          <label className="block text-sm font-medium text-white text-white mb-2">
             <div className="flex items-center gap-2">
               <Trophy size={16} />
               Match Mode
@@ -135,7 +135,7 @@ export default function CreateMatch() {
             name="mode"
             value={formData.mode}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
+            className="w-full px-4 py-2 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-white/[0.05] text-white"
             required
           >
             <option value="0">Referee Mode (referee decides result)</option>
@@ -150,7 +150,7 @@ export default function CreateMatch() {
 
         {/* Stake Amount */}
         <div>
-          <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+          <label className="block text-sm font-medium text-white text-white mb-2">
             <div className="flex items-center gap-2">
               <DollarSign size={16} />
               Stake Amount (PAS)
@@ -164,7 +164,7 @@ export default function CreateMatch() {
             step="0.001"
             min="0.001"
             placeholder="0.1"
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
+            className="w-full px-4 py-2 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-white/[0.05] text-white"
             required
           />
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -181,9 +181,9 @@ export default function CreateMatch() {
               name="includeStake"
               checked={formData.includeStake}
               onChange={handleChange}
-              className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+              className="w-4 h-4 text-emerald-400 border-white/[0.1] rounded focus:ring-emerald-500"
             />
-            <label htmlFor="includeStake" className="text-sm text-gray-900 dark:text-white">
+            <label htmlFor="includeStake" className="text-sm text-white text-white">
               I (referee) also stake and participate as a player
             </label>
           </div>
@@ -191,7 +191,7 @@ export default function CreateMatch() {
 
         {/* Start Time */}
         <div>
-          <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+          <label className="block text-sm font-medium text-white text-white mb-2">
             <div className="flex items-center gap-2">
               <Calendar size={16} />
               Start Time
@@ -202,14 +202,14 @@ export default function CreateMatch() {
             name="startTime"
             value={formData.startTime}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
+            className="w-full px-4 py-2 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-white/[0.05] text-white"
             required
           />
         </div>
 
         {/* End Time */}
         <div>
-          <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+          <label className="block text-sm font-medium text-white text-white mb-2">
             <div className="flex items-center gap-2">
               <Calendar size={16} />
               End Time
@@ -220,14 +220,14 @@ export default function CreateMatch() {
             name="endTime"
             value={formData.endTime}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
+            className="w-full px-4 py-2 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-white/[0.05] text-white"
             required
           />
         </div>
 
         {/* Match Description */}
         <div>
-          <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+          <label className="block text-sm font-medium text-white text-white mb-2">
             <div className="flex items-center gap-2">
               <FileText size={16} />
               Match Description
@@ -239,7 +239,7 @@ export default function CreateMatch() {
             onChange={handleChange}
             rows={4}
             placeholder="e.g. Pickleball singles match..."
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
+            className="w-full px-4 py-2 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-white/[0.05] text-white"
             required
           />
         </div>
@@ -247,7 +247,7 @@ export default function CreateMatch() {
         {/* External Match ID (required for Oracle mode) */}
         {formData.mode === '1' && (
           <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+            <label className="block text-sm font-medium text-white text-white mb-2">
               External Match ID (mydupr)
             </label>
             <input
@@ -256,7 +256,7 @@ export default function CreateMatch() {
               value={formData.externalMatchId}
               onChange={handleChange}
               placeholder="mydupr-123456"
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
+              className="w-full px-4 py-2 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-white/[0.05] text-white"
               required
             />
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -270,7 +270,7 @@ export default function CreateMatch() {
           <button
             type="submit"
             disabled={isPending || isConfirming}
-            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-medium hover:from-pink-600 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-lg font-medium hover:from-emerald-600 hover:to-cyan-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isPending || isConfirming ? (
               <>

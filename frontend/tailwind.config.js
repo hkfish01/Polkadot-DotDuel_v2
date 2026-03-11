@@ -4,15 +4,26 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Outfit', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
       colors: {
+        surface: {
+          DEFAULT: '#0f1219',
+          card: '#161b26',
+          hover: '#1c2233',
+        },
         primary: {
-          50: '#fff1f2',
-          100: '#ffe4e6',
-          500: '#f43f5e',
-          600: '#e11d48',
-          700: '#be123c',
+          50: '#ecfdf5',
+          100: '#d1fae5',
+          400: '#34d399',
+          500: '#10b981',
+          600: '#059669',
+          700: '#047857',
         },
       },
     },

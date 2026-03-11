@@ -23,7 +23,7 @@ const statusColors = [
   'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
   'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
   'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-  'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
+  'bg-white/[0.04] text-gray-100 bg-[#080b12] dark:text-gray-200',
 ]
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as const
@@ -130,7 +130,7 @@ export default function MatchDetail() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-pink-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-emerald-400" />
       </div>
     )
   }
@@ -138,9 +138,9 @@ export default function MatchDetail() {
   if (error || !match) {
     return (
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-12 text-center">
           <XCircle className="w-16 h-16 mx-auto mb-4 text-red-500" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-2xl font-bold text-white text-white mb-2">
             Match Not Found
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
@@ -148,7 +148,7 @@ export default function MatchDetail() {
           </p>
           <button
             onClick={() => navigate('/matches')}
-            className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-medium hover:from-pink-600 hover:to-purple-700 transition-all"
+            className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-lg font-medium hover:from-emerald-600 hover:to-cyan-600 transition-all"
           >
             Back to Duel List
           </button>
@@ -187,14 +187,14 @@ export default function MatchDetail() {
       <div className="mb-6">
         <button
           onClick={() => navigate('/matches')}
-          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400 mb-4"
+          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-emerald-400 dark:hover:text-emerald-400 mb-4"
         >
           <ArrowLeft size={20} />
           Back to Duel List
         </button>
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-3xl font-bold text-white text-white mb-2">
               Duel Details
             </h1>
             <p className="text-gray-600 dark:text-gray-400">Duel ID: #{matchId}</p>
@@ -203,7 +203,7 @@ export default function MatchDetail() {
             <span
               className={`px-4 py-2 rounded-full text-sm font-medium ${
                 statusColors[match.status] ??
-                'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+                'bg-white/[0.04] text-gray-100 bg-[#080b12] dark:text-gray-200'
               }`}
             >
               {statusNames[match.status] ?? 'Unknown'}
@@ -211,7 +211,7 @@ export default function MatchDetail() {
             <button
               type="button"
               onClick={() => refetch()}
-              className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-pink-600 dark:text-pink-300 border border-pink-500/60 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/30 transition-colors"
+              className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-emerald-400 dark:text-emerald-300 border border-emerald-500/60 rounded-lg hover:bg-emerald-500/5 dark:hover:bg-emerald-900/30 transition-colors"
             >
               <RefreshCw size={16} className={isRefetching ? 'animate-spin' : ''} />
               {isRefetching ? 'Refreshing...' : 'Refresh'}
@@ -221,16 +221,16 @@ export default function MatchDetail() {
       </div>
 
       {/* Main Info Card */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-6">
+      <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6 mb-6">
         {/* Description */}
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-3">
-            <Trophy className="w-5 h-5 text-pink-500" />
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+            <Trophy className="w-5 h-5 text-emerald-400" />
+            <h2 className="text-xl font-semibold text-white text-white">
               Description
             </h2>
           </div>
-          <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+          <p className="text-gray-200 text-gray-300 whitespace-pre-wrap">
             {match.description || 'No description'}
           </p>
         </div>
@@ -239,14 +239,14 @@ export default function MatchDetail() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Stake Amount */}
           <div className="flex items-start gap-3">
-            <div className="p-2 bg-pink-100 dark:bg-pink-900 rounded-lg">
-              <DollarSign className="w-5 h-5 text-pink-600 dark:text-pink-400" />
+            <div className="p-2 bg-emerald-500/10 dark:bg-emerald-900 rounded-lg">
+              <DollarSign className="w-5 h-5 text-emerald-400 dark:text-emerald-400" />
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                 Stake Amount
               </p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+              <p className="text-lg font-semibold text-white text-white">
                 {formatEther(stakeAmountWei)} PAS
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -257,14 +257,14 @@ export default function MatchDetail() {
 
           {/* Mode */}
           <div className="flex items-start gap-3">
-            <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
-              <Trophy className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+            <div className="p-2 bg-cyan-500/10 dark:bg-cyan-900 rounded-lg">
+              <Trophy className="w-5 h-5 text-cyan-400 dark:text-cyan-400" />
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                 Match Mode
               </p>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+              <p className="text-lg font-semibold text-white text-white">
                 {match.mode === 0 ? 'Referee Mode' : 'Oracle Mode'}
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -284,7 +284,7 @@ export default function MatchDetail() {
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                 Start Time
               </p>
-              <p className="text-base font-medium text-gray-900 dark:text-white">
+              <p className="text-base font-medium text-white text-white">
                 {formatDate(match.startTime)}
               </p>
             </div>
@@ -299,7 +299,7 @@ export default function MatchDetail() {
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                 End Time
               </p>
-              <p className="text-base font-medium text-gray-900 dark:text-white">
+              <p className="text-base font-medium text-white text-white">
                 {formatDate(match.endTime)}
               </p>
             </div>
@@ -308,10 +308,10 @@ export default function MatchDetail() {
       </div>
 
       {/* Participants Card */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-6">
+      <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6 mb-6">
         <div className="flex items-center gap-2 mb-4">
-          <Users className="w-5 h-5 text-pink-500" />
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+          <Users className="w-5 h-5 text-emerald-400" />
+          <h2 className="text-xl font-semibold text-white text-white">
             Participants ({participantCount}/2)
           </h2>
         </div>
@@ -336,14 +336,14 @@ export default function MatchDetail() {
             return (
               <div
                 key={index}
-                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                className="flex items-center justify-between p-4 bg-white/[0.02] dark:bg-white/[0.05] rounded-lg"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold">
                     {index + 1}
                   </div>
                   <div>
-                    <p className="font-mono text-sm font-medium text-gray-900 dark:text-white">
+                    <p className="font-mono text-sm font-medium text-white text-white">
                       {isEmpty ? 'Waiting for player...' : formatAddress(participant)}
                     </p>
                     {!isEmpty && labels.length > 0 && (
@@ -363,11 +363,11 @@ export default function MatchDetail() {
       </div>
 
       {/* Actions */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 space-y-4">
+      <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6 space-y-4">
         {/* Join Match */}
         {canJoin && (
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+            <h3 className="text-lg font-semibold text-white text-white mb-3">
               Join Match
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -376,7 +376,7 @@ export default function MatchDetail() {
             <button
               onClick={handleJoinMatch}
               disabled={isPending || isConfirming}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-medium hover:from-pink-600 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-lg font-medium hover:from-emerald-600 hover:to-cyan-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending || isConfirming ? (
                 <>
@@ -396,7 +396,7 @@ export default function MatchDetail() {
         {/* Submit Result */}
         {canSubmitResult && (
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+            <h3 className="text-lg font-semibold text-white text-white mb-3">
               Submit Result
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -408,7 +408,7 @@ export default function MatchDetail() {
                 value={winnerAddress}
                 onChange={(e) => setWinnerAddress(e.target.value)}
                 placeholder="0x..."
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white font-mono text-sm"
+                className="w-full px-4 py-2 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-white/[0.05] text-white font-mono text-sm"
               />
               <button
                 onClick={handleSubmitResult}
@@ -434,7 +434,7 @@ export default function MatchDetail() {
         {/* Cancel Match */}
         {canCancel && (
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+            <h3 className="text-lg font-semibold text-white text-white mb-3">
               Cancel Match
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">

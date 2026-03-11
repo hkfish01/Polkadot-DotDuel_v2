@@ -42,7 +42,7 @@ export default function MatchCard({ match }: MatchCardProps) {
 
   return (
     <Link to={`/matches/${match.id}`}>
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-200 dark:border-gray-700 hover:border-pink-500 dark:hover:border-pink-500">
+      <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl p-6 border border-white/[0.06] hover:border-emerald-500/30 transition-all hover:bg-white/[0.05]">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
@@ -62,7 +62,7 @@ export default function MatchCard({ match }: MatchCardProps) {
               {match.description || `Duel #${match.id}`}
             </h3>
           </div>
-          <Trophy className="w-6 h-6 text-pink-500 flex-shrink-0" />
+          <Trophy className="w-6 h-6 text-emerald-400 flex-shrink-0" />
         </div>
 
         {/* Info Grid */}
@@ -102,7 +102,7 @@ export default function MatchCard({ match }: MatchCardProps) {
 
           {/* Creator */}
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex-shrink-0" />
+            <div className="w-4 h-4 bg-gradient-to-br from-emerald-400 to-cyan-400 rounded-full flex-shrink-0" />
             <div>
               <p className="text-xs text-gray-500 dark:text-gray-400">Creator</p>
               <p className="text-sm font-mono text-gray-700 dark:text-gray-300">
@@ -119,7 +119,7 @@ export default function MatchCard({ match }: MatchCardProps) {
               Duel #{match.id}
             </span>
             {match.status === 0 && (
-              <span className="text-sm font-medium text-pink-600 dark:text-pink-400">
+              <span className="text-sm font-medium text-emerald-400">
                 Join Now →
               </span>
             )}

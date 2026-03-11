@@ -85,7 +85,7 @@ export default function MatchList() {
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="text-3xl font-bold text-white text-white mb-2">
           Duel List
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
@@ -93,7 +93,7 @@ export default function MatchList() {
         </p>
         <button
           onClick={() => refetch()}
-          className="mt-4 inline-flex items-center gap-2 px-4 py-2 text-sm text-pink-600 dark:text-pink-400 border border-pink-500 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/30 transition-colors"
+          className="mt-4 inline-flex items-center gap-2 px-4 py-2 text-sm text-emerald-400 dark:text-emerald-400 border border-emerald-500 rounded-lg hover:bg-emerald-500/5 dark:hover:bg-emerald-900/30 transition-colors"
         >
           <RefreshCw size={16} className={isRefetching ? 'animate-spin' : ''} />
           {isRefetching ? 'Refreshing...' : 'Refresh'}
@@ -101,10 +101,10 @@ export default function MatchList() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-6">
+      <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6 mb-6">
         <div className="flex items-center gap-2 mb-4">
           <Filter size={20} className="text-gray-500" />
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <h2 className="text-lg font-semibold text-white text-white">
             Filters
           </h2>
         </div>
@@ -112,7 +112,7 @@ export default function MatchList() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Search */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-200 text-gray-300 mb-2">
               Search
             </label>
             <div className="relative">
@@ -122,20 +122,20 @@ export default function MatchList() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search match descriptions..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
+                className="w-full pl-10 pr-4 py-2 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-white/[0.05] text-white"
               />
             </div>
           </div>
 
           {/* Status Filter */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-200 text-gray-300 mb-2">
               Status
             </label>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
+              className="w-full px-4 py-2 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-white/[0.05] text-white"
             >
               <option value="all">All Status</option>
               <option value="0">Waiting</option>
@@ -147,13 +147,13 @@ export default function MatchList() {
 
           {/* Mode Filter */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-200 text-gray-300 mb-2">
               Mode
             </label>
             <select
               value={filterMode}
               onChange={(e) => setFilterMode(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 dark:bg-gray-700 dark:text-white"
+              className="w-full px-4 py-2 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 dark:bg-white/[0.05] text-white"
             >
               <option value="all">All Modes</option>
               <option value="0">Referee Mode</option>
@@ -170,7 +170,7 @@ export default function MatchList() {
               setFilterMode('all')
               setSearchQuery('')
             }}
-            className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-gray-200 text-gray-300 hover:bg-white/[0.04] dark:hover:bg-gray-700 rounded-lg transition-colors"
           >
             <RefreshCw size={16} />
             Reset Filters
@@ -180,19 +180,19 @@ export default function MatchList() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-4">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Total Matches</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
+          <p className="text-2xl font-bold text-white text-white">{stats.total}</p>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-4">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Waiting</p>
           <p className="text-2xl font-bold text-yellow-600">{stats.waiting}</p>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-4">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">In Progress</p>
           <p className="text-2xl font-bold text-blue-600">{stats.inProgress}</p>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-4">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Completed</p>
           <p className="text-2xl font-bold text-green-600">{stats.completed}</p>
           {stats.cancelled > 0 && (
@@ -203,9 +203,9 @@ export default function MatchList() {
         </div>
       </div>
 
-      <div className="mb-6 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-blue-500/10 dark:from-pink-500/20 dark:via-purple-500/20 dark:to-blue-500/20 border border-pink-500/30 dark:border-pink-500/40 rounded-xl p-4">
-        <p className="text-sm text-pink-700 dark:text-pink-300 mb-1">Total Stake Volume</p>
-        <p className="text-2xl font-semibold text-pink-600 dark:text-pink-200">{totalVolumeDisplay} PAS</p>
+      <div className="mb-6 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-teal-500/10 dark:from-emerald-500/20 dark:via-cyan-500/20 dark:to-teal-500/20 border border-emerald-500/30 dark:border-emerald-500/40 rounded-xl p-4">
+        <p className="text-sm text-emerald-400 dark:text-emerald-300 mb-1">Total Stake Volume</p>
+        <p className="text-2xl font-semibold text-emerald-400 dark:text-emerald-200">{totalVolumeDisplay} PAS</p>
       </div>
 
       {error && (
@@ -224,16 +224,16 @@ export default function MatchList() {
 
       {/* Match List */}
       {isLoading ? (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-12 text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-gray-600 dark:text-gray-400">Loading...</p>
         </div>
       ) : filteredMatches.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-12 text-center">
           <div className="text-gray-400 mb-4">
             <Filter size={48} className="mx-auto" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h3 className="text-xl font-semibold text-white text-white mb-2">
             No Matches Found
           </h3>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
@@ -246,7 +246,7 @@ export default function MatchList() {
               setSearchQuery('')
               refetch()
             }}
-            className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-medium hover:from-pink-600 hover:to-purple-700 transition-all"
+            className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-lg font-medium hover:from-emerald-600 hover:to-cyan-600 transition-all"
           >
             Reset Filters
           </button>

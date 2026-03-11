@@ -27,7 +27,7 @@ const statusClasses = [
   'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
   'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
   'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-  'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
+  'bg-white/[0.04] text-gray-100 bg-[#080b12] dark:text-gray-200',
 ]
 
 const formatAddress = (addr: string) => {
@@ -100,7 +100,7 @@ export default function Stats() {
       <div className="mb-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-3xl font-bold text-white text-white mb-2">
               Platform Stats
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
@@ -110,7 +110,7 @@ export default function Stats() {
           <button
             type="button"
             onClick={handleRefresh}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm text-pink-600 dark:text-pink-300 border border-pink-500/60 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/30 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm text-emerald-400 dark:text-emerald-300 border border-emerald-500/60 rounded-lg hover:bg-emerald-500/5 dark:hover:bg-emerald-900/30 transition-colors"
           >
             <RefreshCw size={16} className={isRefreshing ? 'animate-spin' : ''} />
             {isRefreshing ? 'Refreshing...' : 'Refresh'}
@@ -134,7 +134,7 @@ export default function Stats() {
 
       {/* Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-gradient-to-br from-pink-500 to-purple-600 rounded-xl shadow-sm p-6 text-white">
+        <div className="bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-xl shadow-sm p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             <Trophy className="w-8 h-8" />
             <Activity className="w-6 h-6 opacity-50" />
@@ -167,7 +167,7 @@ export default function Stats() {
 
       {/* Detailed Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Completed</p>
           <p className="text-3xl font-bold text-green-600">
             {statsLoading && !platformStats ? '...' : completedMatches}
@@ -175,7 +175,7 @@ export default function Stats() {
           <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">{completionRate}% completion rate</div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">In Progress</p>
           <p className="text-3xl font-bold text-blue-600">
             {statsLoading && !platformStats ? '...' : activeMatches}
@@ -183,7 +183,7 @@ export default function Stats() {
           <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">{activeRate}% active rate</div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Cancelled</p>
           <p className="text-3xl font-bold text-gray-600">
             {statsLoading && !platformStats ? '...' : cancelledMatches}
@@ -193,10 +193,10 @@ export default function Stats() {
       </div>
 
       {/* Top Players Leaderboard */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-8">
+      <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6 mb-8">
         <div className="flex items-center gap-2 mb-6">
           <Trophy className="w-6 h-6 text-yellow-500" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Leaderboard</h2>
+          <h2 className="text-2xl font-bold text-white text-white">Leaderboard</h2>
         </div>
 
         {statsLoading && !platformStats ? (
@@ -207,7 +207,7 @@ export default function Stats() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-200 dark:border-gray-700">
+                <tr className="border-b border-white/[0.06] dark:border-white/[0.06]">
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Rank</th>
                   <th className="text-left py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Player</th>
                   <th className="text-right py-3 px-4 text-sm font-medium text-gray-500 dark:text-gray-400">Wins</th>
@@ -223,7 +223,7 @@ export default function Stats() {
                   return (
                     <tr
                       key={player.address + index}
-                      className="border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                      className="border-b border-gray-100 dark:border-white/[0.06] last:border-0 hover:bg-white/[0.02] dark:hover:bg-gray-700/50 transition-colors"
                     >
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-2">
@@ -240,26 +240,26 @@ export default function Stats() {
                               {index + 1}
                             </div>
                           ) : (
-                            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 font-bold">
+                            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 dark:bg-gray-600 text-gray-200 text-gray-300 font-bold">
                               {index + 1}
                             </div>
                           )}
                         </div>
                       </td>
                       <td className="py-4 px-4">
-                        <span className="font-mono text-sm text-gray-900 dark:text-white">{formatAddress(player.address)}</span>
+                        <span className="font-mono text-sm text-white text-white">{formatAddress(player.address)}</span>
                       </td>
                       <td className="py-4 px-4 text-right">
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{player.wins}</span>
+                        <span className="text-sm font-semibold text-white text-white">{player.wins}</span>
                       </td>
                       <td className="py-4 px-4 text-right">
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{player.losses}</span>
+                        <span className="text-sm font-semibold text-white text-white">{player.losses}</span>
                       </td>
                       <td className="py-4 px-4 text-right">
                         <span className="text-sm font-semibold text-green-600">{player.winRate.toFixed(1)}%</span>
                       </td>
                       <td className="py-4 px-4 text-right">
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{volumeDisplay} PAS</span>
+                        <span className="text-sm font-semibold text-white text-white">{volumeDisplay} PAS</span>
                       </td>
                     </tr>
                   )
@@ -271,10 +271,10 @@ export default function Stats() {
       </div>
 
       {/* Recent Matches */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+      <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6">
         <div className="flex items-center gap-2 mb-6">
-          <Activity className="w-6 h-6 text-pink-500" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Recent Matches</h2>
+          <Activity className="w-6 h-6 text-emerald-400" />
+          <h2 className="text-2xl font-bold text-white text-white">Recent Matches</h2>
         </div>
 
         {recentLoading && !recentMatches ? (
@@ -294,10 +294,10 @@ export default function Stats() {
               return (
                 <div
                   key={match.id}
-                  className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                  className="flex items-center justify-between p-4 bg-white/[0.02] dark:bg-white/[0.05] rounded-lg hover:bg-white/[0.04] dark:hover:bg-gray-600 transition-colors"
                 >
                   <div className="flex-1 pr-4">
-                    <p className="font-medium text-gray-900 dark:text-white mb-1 line-clamp-1">
+                    <p className="font-medium text-white text-white mb-1 line-clamp-1">
                       {match.description || `Match #${match.id}`}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">

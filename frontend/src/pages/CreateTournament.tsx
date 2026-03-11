@@ -67,7 +67,7 @@ export default function CreateTournament() {
       {/* Back */}
       <Link
         to="/tournaments"
-        className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-pink-500 mb-6"
+        className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-emerald-400 mb-6"
       >
         <ArrowLeft size={18} />
         Back to Tournaments
@@ -75,8 +75,8 @@ export default function CreateTournament() {
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
-          <Trophy className="text-pink-500" size={32} />
+        <h1 className="text-3xl font-bold text-white text-white mb-2 flex items-center gap-3">
+          <Trophy className="text-emerald-400" size={32} />
           Create Tournament
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
@@ -87,14 +87,14 @@ export default function CreateTournament() {
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Info */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <Info size={20} className="text-pink-500" />
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-white text-white flex items-center gap-2">
+            <Info size={20} className="text-emerald-400" />
             Basic Information
           </h2>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-200 text-gray-300 mb-1">
               Tournament Name *
             </label>
             <input
@@ -103,12 +103,12 @@ export default function CreateTournament() {
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. DotDuel Championship S1"
               maxLength={100}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              className="w-full px-4 py-3 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-white/[0.05] text-white"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-200 text-gray-300 mb-1">
               Description
             </label>
             <textarea
@@ -117,20 +117,20 @@ export default function CreateTournament() {
               placeholder="Describe your tournament (optional)"
               rows={3}
               maxLength={500}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
+              className="w-full px-4 py-3 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-white/[0.05] text-white resize-none"
             />
           </div>
         </div>
 
         {/* Tournament Settings */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <Users size={20} className="text-pink-500" />
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-white text-white flex items-center gap-2">
+            <Users size={20} className="text-emerald-400" />
             Tournament Settings
           </h2>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-200 text-gray-300 mb-2">
               Bracket Size *
             </label>
             <div className="grid grid-cols-3 gap-3">
@@ -141,11 +141,11 @@ export default function CreateTournament() {
                   onClick={() => setBracketSize(opt.value)}
                   className={`p-4 rounded-lg border-2 text-center transition-all ${
                     bracketSize === opt.value
-                      ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20'
-                      : 'border-gray-200 dark:border-gray-600 hover:border-gray-300'
+                      ? 'border-emerald-500 bg-emerald-500/5 dark:bg-emerald-900/20'
+                      : 'border-white/[0.06] dark:border-white/[0.08] hover:border-white/[0.1]'
                   }`}
                 >
-                  <p className="text-lg font-bold text-gray-900 dark:text-white">{opt.label}</p>
+                  <p className="text-lg font-bold text-white text-white">{opt.label}</p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{opt.desc}</p>
                 </button>
               ))}
@@ -153,8 +153,8 @@ export default function CreateTournament() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-2">
-              <DollarSign size={16} className="text-pink-500" />
+            <label className="block text-sm font-medium text-gray-200 text-gray-300 mb-1 flex items-center gap-2">
+              <DollarSign size={16} className="text-emerald-400" />
               Entry Fee (PAS) *
             </label>
             <input
@@ -164,7 +164,7 @@ export default function CreateTournament() {
               value={entryFee}
               onChange={(e) => setEntryFee(e.target.value)}
               placeholder="0.01"
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              className="w-full px-4 py-3 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-white/[0.05] text-white"
             />
             <p className="text-xs text-gray-500 mt-1">
               Set to 0 for free entry. The total prize pool = entry fee × number of players.
@@ -173,15 +173,15 @@ export default function CreateTournament() {
         </div>
 
         {/* Timing */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <Clock size={20} className="text-pink-500" />
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-white text-white flex items-center gap-2">
+            <Clock size={20} className="text-emerald-400" />
             Schedule
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-200 text-gray-300 mb-1">
                 Registration Period (days from now) *
               </label>
               <input
@@ -190,14 +190,14 @@ export default function CreateTournament() {
                 max={30}
                 value={registrationDays}
                 onChange={(e) => setRegistrationDays(parseInt(e.target.value) || 1)}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-3 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-white/[0.05] text-white"
               />
               <p className="text-xs text-gray-500 mt-1">
                 Registration closes {registrationDays} day{registrationDays > 1 ? 's' : ''} from now
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-200 text-gray-300 mb-1">
                 Start Time (days from now) *
               </label>
               <input
@@ -206,7 +206,7 @@ export default function CreateTournament() {
                 max={60}
                 value={startDays}
                 onChange={(e) => setStartDays(parseInt(e.target.value) || registrationDays + 1)}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-3 border border-white/[0.1] dark:border-white/[0.08] rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent dark:bg-white/[0.05] text-white"
               />
               <p className="text-xs text-gray-500 mt-1">
                 Tournament starts {startDays} day{startDays > 1 ? 's' : ''} from now
@@ -216,28 +216,28 @@ export default function CreateTournament() {
         </div>
 
         {/* Preview */}
-        <div className="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 rounded-xl p-6 border border-pink-200 dark:border-pink-800">
-          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
+        <div className="bg-gradient-to-r from-emerald-900/20 to-cyan-900/20 dark:from-emerald-900/20 dark:to-cyan-900/20 rounded-xl p-6 border border-emerald-500/30 dark:border-emerald-500/20">
+          <h3 className="text-sm font-semibold text-gray-200 text-gray-300 mb-3 uppercase tracking-wider">
             Summary
           </h3>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div>
               <span className="text-gray-500">Name:</span>{' '}
-              <span className="text-gray-900 dark:text-white font-medium">{name || '-'}</span>
+              <span className="text-white text-white font-medium">{name || '-'}</span>
             </div>
             <div>
               <span className="text-gray-500">Bracket:</span>{' '}
-              <span className="text-gray-900 dark:text-white font-medium">
+              <span className="text-white text-white font-medium">
                 {bracketOptions[bracketSize]?.label}
               </span>
             </div>
             <div>
               <span className="text-gray-500">Entry Fee:</span>{' '}
-              <span className="text-gray-900 dark:text-white font-medium">{entryFee} PAS</span>
+              <span className="text-white text-white font-medium">{entryFee} PAS</span>
             </div>
             <div>
               <span className="text-gray-500">Max Prize Pool:</span>{' '}
-              <span className="text-gray-900 dark:text-white font-medium">
+              <span className="text-white text-white font-medium">
                 {(
                   parseFloat(entryFee || '0') *
                   [4, 8, 16][bracketSize] *
@@ -248,13 +248,13 @@ export default function CreateTournament() {
             </div>
             <div>
               <span className="text-gray-500">Reg. Deadline:</span>{' '}
-              <span className="text-gray-900 dark:text-white font-medium">
+              <span className="text-white text-white font-medium">
                 {new Date(Date.now() + registrationDays * 86400000).toLocaleDateString('en-US')}
               </span>
             </div>
             <div>
               <span className="text-gray-500">Start:</span>{' '}
-              <span className="text-gray-900 dark:text-white font-medium">
+              <span className="text-white text-white font-medium">
                 {new Date(Date.now() + startDays * 86400000).toLocaleDateString('en-US')}
               </span>
             </div>
@@ -269,7 +269,7 @@ export default function CreateTournament() {
           <button
             type="submit"
             disabled={isPending || !isConnected}
-            className="flex-1 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-purple-700 disabled:opacity-50 transition-all text-lg"
+            className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white rounded-lg font-semibold hover:from-emerald-600 hover:to-cyan-600 disabled:opacity-50 transition-all text-lg"
           >
             {isPending
               ? 'Creating Tournament...'
