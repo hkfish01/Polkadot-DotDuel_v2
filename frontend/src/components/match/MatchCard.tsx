@@ -39,6 +39,8 @@ export default function MatchCard({ match }: MatchCardProps) {
   }
 
   const participantCount = match.participants.filter(p => p !== '0x0000000000000000000000000000000000000000').length
+  const nowSeconds = Math.floor(Date.now() / 1000)
+  const isRefundReady = match.status === 0 && participantCount < 2 && nowSeconds >= match.startTime
 
   return (
     <Link to={`/matches/${match.id}`}>
@@ -52,7 +54,7 @@ export default function MatchCard({ match }: MatchCardProps) {
                   statusColors[match.status] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
                 }`}
               >
-                {statusNames[match.status] ?? 'Unknown'}
+                {isRefundReady ? 'Refund Ready' : statusNames[match.status] ?? 'Unknown'}
               </span>
               <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
                 {match.mode === 0 ? 'Referee' : 'Oracle'}
@@ -118,7 +120,12 @@ export default function MatchCard({ match }: MatchCardProps) {
             <span className="text-xs text-gray-500 dark:text-gray-400">
               Duel #{match.id}
             </span>
-            {match.status === 0 && (
+            {isRefundReady && (
+              <span className="text-sm font-medium text-amber-300">
+                End & Refund →
+              </span>
+            )}
+            {!isRefundReady && match.status === 0 && (
               <span className="text-sm font-medium text-emerald-400">
                 Join Now →
               </span>

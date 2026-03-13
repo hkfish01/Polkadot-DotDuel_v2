@@ -39,8 +39,39 @@ function OddsBar({ pctA, pctB, sideA, sideB }: { pctA: number; pctB: number; sid
   )
 }
 
-function MiniOddsChart({ history }: { history: any[] }) {
-  if (!history || history.length === 0) {
+function MiniOddsChart({ history, sideA, sideB }: { history: any[]; sideA: string; sideB: string }) {
+  const allHistory = Array.isArray(history) ? history : []
+  const [replayIndex, setReplayIndex] = useState(Math.max(allHistory.length - 1, 0))
+  const [isPlaying, setIsPlaying] = useState(false)
+
+  useEffect(() => {
+    setReplayIndex(Math.max(allHistory.length - 1, 0))
+    setIsPlaying(false)
+  }, [allHistory.length])
+
+  useEffect(() => {
+    if (!isPlaying) return
+    if (allHistory.length <= 1) return
+    if (replayIndex >= allHistory.length - 1) {
+      setIsPlaying(false)
+      return
+    }
+
+    const timer = setInterval(() => {
+      setReplayIndex((prev) => {
+        const next = prev + 1
+        if (next >= allHistory.length - 1) {
+          setIsPlaying(false)
+          return allHistory.length - 1
+        }
+        return next
+      })
+    }, 700)
+
+    return () => clearInterval(timer)
+  }, [isPlaying, replayIndex, allHistory.length])
+
+  if (allHistory.length === 0) {
     return (
       <div className="flex items-center justify-center h-32 text-gray-400 text-sm">
         No betting activity yet
@@ -48,38 +79,151 @@ function MiniOddsChart({ history }: { history: any[] }) {
     )
   }
 
-  // Build points from history — each point has percentA
-  const points = history.map((h: any) => h.percentA as number)
+  const visibleCount = Math.min(Math.max(replayIndex + 1, 1), allHistory.length)
+  const visibleHistory = allHistory.slice(0, visibleCount)
+
+  // Build points from visible history for replay
+  const pointsA = visibleHistory.map((h: any) => Number(h.percentA ?? 50))
+  const pointsB = visibleHistory.map((h: any) => Number(h.percentB ?? 50))
+  const fullPointsA = allHistory.map((h: any) => Number(h.percentA ?? 50))
+  const firstA = pointsA[0] ?? 50
+  const latestA = pointsA[pointsA.length - 1] ?? 50
+  const finalA = fullPointsA[fullPointsA.length - 1] ?? 50
+  const deltaA = latestA - firstA
+  const currentStep = visibleHistory[visibleHistory.length - 1]
+  const progress = allHistory.length <= 1 ? 100 : ((visibleCount - 1) / (allHistory.length - 1)) * 100
+
+  const currentBetAmount = (() => {
+    try {
+      return Number(formatEther(BigInt(currentStep?.amountWei ?? '0'))).toFixed(4)
+    } catch {
+      return '0.0000'
+    }
+  })()
+
   const maxY = 100
-  const svgW = 400
-  const svgH = 120
-  const padX = 0
-  const padY = 4
+  const svgW = 440
+  const svgH = 180
+  const padL = 26
+  const padR = 8
+  const padT = 8
+  const padB = 16
 
-  const pathPoints = points.map((p, i) => {
-    const x = padX + (i / Math.max(points.length - 1, 1)) * (svgW - padX * 2)
-    const y = padY + ((maxY - p) / maxY) * (svgH - padY * 2)
+  const mapPoint = (p: number, i: number, arrLength: number) => {
+    const x = padL + (i / Math.max(arrLength - 1, 1)) * (svgW - padL - padR)
+    const y = padT + ((maxY - p) / maxY) * (svgH - padT - padB)
     return { x, y }
-  })
+  }
 
-  const lineA = pathPoints.map((pt, i) => `${i === 0 ? 'M' : 'L'}${pt.x},${pt.y}`).join(' ')
+  const pathPointsA = pointsA.map((p, i) => mapPoint(p, i, pointsA.length))
+  const pathPointsB = pointsB.map((p, i) => mapPoint(p, i, pointsB.length))
+
+  const lineA = pathPointsA.map((pt, i) => `${i === 0 ? 'M' : 'L'}${pt.x},${pt.y}`).join(' ')
+  const lineB = pathPointsB.map((pt, i) => `${i === 0 ? 'M' : 'L'}${pt.x},${pt.y}`).join(' ')
+  const areaA = `${lineA} L ${padL + (svgW - padL - padR)},${svgH - padB} L ${padL},${svgH - padB} Z`
 
   return (
     <div className="relative">
-      <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full h-32" preserveAspectRatio="none">
-        {/* 50% line */}
-        <line x1={0} y1={svgH / 2} x2={svgW} y2={svgH / 2} stroke="rgba(128,128,128,0.3)" strokeDasharray="4,4" />
-        {/* Side A line */}
+      <div className="mb-3 rounded-lg border border-white/[0.08] bg-white/[0.02] p-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="text-xs text-gray-300">
+            <span className="font-semibold text-cyan-300">Replay</span> {visibleCount}/{allHistory.length}
+            {' · '}
+            Current: {latestA.toFixed(1)}% {sideA}
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                if (allHistory.length <= 1) return
+                if (replayIndex >= allHistory.length - 1) {
+                  setReplayIndex(0)
+                }
+                setIsPlaying((v) => !v)
+              }}
+              disabled={allHistory.length <= 1}
+              className="px-3 py-1.5 text-xs rounded-md bg-cyan-500/20 text-cyan-200 border border-cyan-500/40 hover:bg-cyan-500/30 disabled:opacity-40"
+            >
+              {isPlaying ? 'Pause' : 'Play'}
+            </button>
+            <button
+              onClick={() => {
+                setIsPlaying(false)
+                setReplayIndex(Math.max(allHistory.length - 1, 0))
+              }}
+              className="px-3 py-1.5 text-xs rounded-md bg-white/[0.06] text-gray-200 border border-white/[0.12] hover:bg-white/[0.1]"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+        <div className="mt-2 h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-300" style={{ width: `${progress}%` }} />
+        </div>
+      </div>
+
+      <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full h-44" preserveAspectRatio="none">
+        {[25, 50, 75].map((yPct) => {
+          const y = padT + ((maxY - yPct) / maxY) * (svgH - padT - padB)
+          return (
+            <g key={yPct}>
+              <line x1={padL} y1={y} x2={svgW - padR} y2={y} stroke="rgba(148,163,184,0.3)" strokeDasharray={yPct === 50 ? '4,4' : '2,4'} />
+              <text x={2} y={y + 4} fill="rgba(148,163,184,0.8)" fontSize="10">{yPct}%</text>
+            </g>
+          )
+        })}
+
+        <path d={areaA} fill="url(#oddsAFill)" opacity="0.4" />
         <path d={lineA} fill="none" stroke="#3b82f6" strokeWidth="2.5" />
-        {/* Dots */}
-        {pathPoints.map((pt, i) => (
-          <circle key={i} cx={pt.x} cy={pt.y} r="3" fill="#3b82f6" opacity="0.8" />
+        <path d={lineB} fill="none" stroke="#ef4444" strokeWidth="2.5" opacity="0.9" />
+
+        {pathPointsA.map((pt, i) => (
+          <circle key={`a-${i}`} cx={pt.x} cy={pt.y} r="2.6" fill="#3b82f6" opacity="0.9" />
         ))}
+        {pathPointsB.map((pt, i) => (
+          <circle key={`b-${i}`} cx={pt.x} cy={pt.y} r="2.6" fill="#ef4444" opacity="0.9" />
+        ))}
+
+        {pathPointsA.length > 0 && (
+          <>
+            <circle cx={pathPointsA[pathPointsA.length - 1].x} cy={pathPointsA[pathPointsA.length - 1].y} r="4" fill="#3b82f6" />
+            <circle cx={pathPointsB[pathPointsB.length - 1].x} cy={pathPointsB[pathPointsB.length - 1].y} r="4" fill="#ef4444" />
+          </>
+        )}
+
+        <defs>
+          <linearGradient id="oddsAFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.45" />
+            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.02" />
+          </linearGradient>
+        </defs>
       </svg>
-      <div className="flex justify-between text-xs text-gray-400 mt-1">
-        <span>First bet</span>
-        <span className="text-blue-500">── Side A %</span>
-        <span>Latest</span>
+
+      <div className="flex items-center justify-between gap-3 text-xs mt-2">
+        <span className="text-blue-400 font-medium">{sideA} line</span>
+        <span className="text-gray-400">{allHistory.length} bets tracked</span>
+        <span className="text-red-400 font-medium">{sideB} line</span>
+      </div>
+
+      <div className="mt-2 rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2 text-xs text-gray-300">
+        Step {visibleCount}: {currentStep?.side === 1 ? sideA : sideB} bet by {currentStep?.bettor?.slice?.(0, 6)}...{currentStep?.bettor?.slice?.(-4)} ({currentBetAmount} PAS)
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+        <div className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2">
+          <p className="text-[11px] text-gray-400">Start</p>
+          <p className="text-sm font-semibold text-blue-300">{firstA.toFixed(1)}% {sideA}</p>
+        </div>
+        <div className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2">
+          <p className="text-[11px] text-gray-400">Latest / Final</p>
+          <p className="text-sm font-semibold text-blue-300">{latestA.toFixed(1)}% {sideA}</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">Final: {finalA.toFixed(1)}%</p>
+        </div>
+        <div className="rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2">
+          <p className="text-[11px] text-gray-400">Shift</p>
+          <p className={`text-sm font-semibold ${deltaA >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
+            {deltaA >= 0 ? '+' : ''}{deltaA.toFixed(1)} pts
+          </p>
+        </div>
       </div>
     </div>
   )
@@ -92,7 +236,7 @@ export default function ArenaDetail() {
   const { arena, loading, refetch: refetchArena } = useArenaDetail(arenaId)
   const { bets, refetch: refetchBets } = useArenaBets(arenaId)
   const { history } = useArenaOddsHistory(arenaId)
-  const { placeBet, resolveArena, claimWinnings, isPending, isConfirming, isConfirmed } = useArenaContract()
+  const { placeBet, resolveArena, claimWinnings, isPending, isConfirming, isConfirmed, error } = useArenaContract()
 
   const [betAmount, setBetAmount] = useState('0.01')
   const [selectedSide, setSelectedSide] = useState<1 | 2>(1)
@@ -105,6 +249,18 @@ export default function ArenaDetail() {
       refetchBets()
     }
   }, [isConfirmed])
+
+  useEffect(() => {
+    if (!error) return
+
+    const rawMessage = error.message || 'Transaction failed'
+    const cleanMessage = rawMessage
+      .replace(/^.*execution reverted:?\s*/i, '')
+      .replace(/^.*User rejected the request\.?\s*/i, 'Transaction rejected in wallet.')
+      .trim()
+
+    toast.error(cleanMessage || 'Transaction failed')
+  }, [error])
 
   if (loading) {
     return (
@@ -138,6 +294,15 @@ export default function ArenaDetail() {
   const now = Date.now() / 1000
   const canBet = isOpen && now < arena.bettingDeadline && !isCreator
   const canResolve = isCreator && now >= arena.bettingDeadline && now <= arena.resolveDeadline && !isResolved && arena.status !== 3
+  const betBlockedReason = !address
+    ? 'Please connect your wallet first.'
+    : !isOpen
+      ? `Betting is currently ${statusLabel.toLowerCase()}.`
+      : now >= arena.bettingDeadline
+        ? 'Betting deadline has passed for this arena.'
+        : isCreator
+          ? 'Arena creator cannot place bets on their own market.'
+          : null
 
   // User bets summary
   const userBets = bets.filter((b: any) => b.bettor?.toLowerCase() === address?.toLowerCase())
@@ -149,10 +314,16 @@ export default function ArenaDetail() {
   )
 
   const handleBet = () => {
+    if (!canBet) {
+      toast.error(betBlockedReason || 'Betting is not available right now')
+      return
+    }
+
     try {
       const amount = parseEther(betAmount)
       placeBet(arenaId, selectedSide, amount)
-    } catch {
+    } catch (err: any) {
+      console.error('Place bet error:', err)
       toast.error('Invalid bet amount')
     }
   }
@@ -225,7 +396,7 @@ export default function ArenaDetail() {
           <TrendingUp className="w-5 h-5 text-orange-500" />
           Odds Movement
         </h2>
-        <MiniOddsChart history={history} />
+        <MiniOddsChart history={history} sideA={arena.sideA} sideB={arena.sideB} />
       </div>
 
       {/* Place Bet */}
@@ -296,6 +467,16 @@ export default function ArenaDetail() {
           >
             {isPending ? 'Confirm in wallet...' : isConfirming ? 'Processing...' : `Bet on ${selectedSide === 1 ? arena.sideA : arena.sideB}`}
           </button>
+        </div>
+      )}
+
+      {!canBet && (
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-2xl shadow-sm p-6 border border-amber-500/30">
+          <h2 className="text-lg font-bold text-white mb-2">Betting Unavailable</h2>
+          <p className="text-sm text-amber-300">{betBlockedReason}</p>
+          <p className="text-xs text-gray-400 mt-2">
+            Betting window: until {bettingDeadline.toLocaleString()}
+          </p>
         </div>
       )}
 

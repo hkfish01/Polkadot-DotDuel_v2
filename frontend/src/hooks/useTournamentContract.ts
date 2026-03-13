@@ -34,6 +34,18 @@ const TOURNAMENT_ABI = [
     outputs: [],
   },
   {
+    name: 'submitMatchResult',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: '_tournamentId', type: 'uint256' },
+      { name: '_round', type: 'uint256' },
+      { name: '_matchIndex', type: 'uint256' },
+      { name: '_result', type: 'uint8' },
+    ],
+    outputs: [],
+  },
+  {
     name: 'placePrediction',
     type: 'function',
     stateMutability: 'payable',
@@ -103,6 +115,20 @@ export function useTournamentContract() {
     })
   }
 
+  const submitMatchResult = async (
+    tournamentId: number,
+    round: number,
+    matchIndex: number,
+    result: number
+  ) => {
+    return writeContract({
+      address: TOURNAMENT_ADDRESS,
+      abi: TOURNAMENT_ABI,
+      functionName: 'submitMatchResult',
+      args: [BigInt(tournamentId), BigInt(round), BigInt(matchIndex), result],
+    })
+  }
+
   const placePrediction = async (
     tournamentId: number,
     predictedWinner: string,
@@ -139,6 +165,7 @@ export function useTournamentContract() {
     createTournament,
     registerForTournament,
     startTournament,
+    submitMatchResult,
     placePrediction,
     claimPrediction,
     cancelTournament,
