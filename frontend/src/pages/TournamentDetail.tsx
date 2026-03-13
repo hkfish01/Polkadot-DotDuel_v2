@@ -167,6 +167,24 @@ export default function TournamentDetail() {
   const canSubmitTournamentResult = isConnected && tournament.status === 1
   const prizePool = Number(formatEther(BigInt(tournament.prizePool || 0)))
   const entryFee = Number(formatEther(BigInt(tournament.entryFee || 0)))
+  const predictionPool = Number(formatEther(BigInt(tournament.predictionPool || 0)))
+  const predictionSummary = (() => {
+    const groups = new Map<string, { totalAmount: bigint; betCount: number }>()
+
+    for (const pred of predictionData ?? []) {
+      const key = pred.predictedWinner
+      const current = groups.get(key) ?? { totalAmount: 0n, betCount: 0 }
+      current.totalAmount += BigInt(pred.amount ?? '0')
+      current.betCount += 1
+      groups.set(key, current)
+    }
+
+    return Array.from(groups.entries()).map(([predictedWinner, summary]) => ({
+      predictedWinner,
+      totalAmount: summary.totalAmount,
+      betCount: summary.betCount,
+    }))
+  })()
   const nextUnsettledMatch = Array.isArray(bracketData)
     ? bracketData.find((m: any) => !m.isSettled && m.playerOne && m.playerTwo)
     : null
@@ -486,9 +504,9 @@ export default function TournamentDetail() {
             <h2 className="text-xl font-bold text-white text-white mb-4">
               Prediction Market
             </h2>
-            {predictionData?.length ? (
+            {predictionSummary.length ? (
               <div className="space-y-3">
-                {predictionData.map((pred: any, idx: number) => (
+                {predictionSummary.map((pred, idx: number) => (
                   <div
                     key={idx}
                     className="flex items-center justify-between bg-white/[0.02] dark:bg-white/[0.05]/50 rounded-lg p-4"
@@ -500,7 +518,7 @@ export default function TournamentDetail() {
                     </div>
                     <div className="text-right">
                       <span className="text-sm font-semibold text-emerald-400 dark:text-emerald-400">
-                        {Number(formatEther(BigInt(pred.totalAmount || 0))).toFixed(3)} PAS
+                        {Number(formatEther(pred.totalAmount)).toFixed(3)} PAS
                       </span>
                       <span className="text-xs text-gray-500 ml-2">
                         ({pred.betCount} bets)
@@ -588,7 +606,7 @@ export default function TournamentDetail() {
           <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/[0.06]">
             <span className="text-gray-500">Prediction Pool</span>
             <span className="text-gray-200 text-gray-300">
-              {Number(formatEther(BigInt((tournament as any).predictionPool || 0))).toFixed(3)} ETH
+              {predictionPool.toFixed(3)} PAS
             </span>
           </div>
           {(tournament as any).winner && (tournament as any).winner !== '0x0000000000000000000000000000000000000000' && (

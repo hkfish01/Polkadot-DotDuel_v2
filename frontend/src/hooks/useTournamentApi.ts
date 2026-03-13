@@ -9,6 +9,7 @@ export interface TournamentApiData {
   bracketSize: number
   entryFee: string
   prizePool: string
+  predictionPool: string
   status: number
   maxPlayers: number
   registeredCount: number
@@ -48,6 +49,7 @@ const parseTournament = (raw: any): TournamentApiData => ({
   bracketSize: Number(raw.bracketSize ?? 0),
   entryFee: String(raw.entryFee ?? '0'),
   prizePool: String(raw.prizePool ?? '0'),
+  predictionPool: String(raw.predictionPool ?? '0'),
   status: Number(raw.status ?? 0),
   maxPlayers: Number(raw.maxPlayers ?? 0),
   registeredCount: Number(raw.registeredCount ?? 0),

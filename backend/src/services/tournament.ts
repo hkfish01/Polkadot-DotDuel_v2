@@ -44,6 +44,7 @@ export interface TournamentDTO {
   bracketSize: number
   entryFee: string
   prizePool: string
+  predictionPool: string
   status: number
   maxPlayers: number
   registeredCount: number
@@ -131,6 +132,7 @@ const normalizeTournament = (raw: any): TournamentDTO => {
     bracketSize: Number(raw?.bracketSize ?? raw?.[4] ?? 0),
     entryFee: BigInt(raw?.entryFee ?? raw?.[5] ?? 0n).toString(),
     prizePool: BigInt(raw?.prizePool ?? raw?.[6] ?? 0n).toString(),
+    predictionPool: '0',
     status: Number(raw?.status ?? raw?.[7] ?? 0),
     maxPlayers: Number(raw?.maxPlayers ?? raw?.[8] ?? 0),
     registeredCount: Number(raw?.registeredCount ?? raw?.[9] ?? 0),
@@ -154,6 +156,14 @@ export const getTournamentById = async (id: number): Promise<TournamentDTO | nul
   try {
     const raw = await contract.getTournament(id)
     const tournament = normalizeTournament(raw)
+
+    // Fetch prediction pool for this tournament
+    try {
+      const predictionPool: bigint = await contract.predictionPool(id)
+      tournament.predictionPool = predictionPool.toString()
+    } catch {
+      tournament.predictionPool = '0'
+    }
 
     // Fetch players
     try {
