@@ -28,11 +28,20 @@ export default function MatchList() {
       inProgress: 0,
       completed: 0,
       cancelled: 0,
+      refundReady: 0,
       volume: 0n,
     }
 
     for (const match of matches) {
       summary.volume += BigInt(match.stakeAmountWei ?? '0')
+      const participantCount = match.participants.filter(
+        (participant: string) => participant !== '0x0000000000000000000000000000000000000000'
+      ).length
+      const nowSeconds = Math.floor(Date.now() / 1000)
+
+      if (match.status === 0 && participantCount < 2 && nowSeconds >= match.startTime) {
+        summary.refundReady += 1
+      }
 
       switch (match.status) {
         case 0:
@@ -187,6 +196,11 @@ export default function MatchList() {
         <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-4">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Waiting</p>
           <p className="text-2xl font-bold text-yellow-600">{stats.waiting}</p>
+          {stats.refundReady > 0 && (
+            <p className="text-xs text-amber-300 mt-1">
+              Refund Ready: {stats.refundReady}
+            </p>
+          )}
         </div>
         <div className="bg-white/[0.03] backdrop-blur-sm rounded-xl shadow-sm p-4">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">In Progress</p>

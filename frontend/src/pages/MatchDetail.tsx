@@ -111,7 +111,11 @@ export default function MatchDetail() {
   }
 
   const handleCancelMatch = async () => {
-    if (!confirm('Are you sure you want to cancel this match? Stakes will be refunded.')) {
+    const confirmMessage = isUnfilledAfterStart
+      ? 'This duel already started without enough players. End it now and refund any locked stake?'
+      : 'Are you sure you want to cancel this match? Stakes will be refunded.'
+
+    if (!confirm(confirmMessage)) {
       return
     }
 
@@ -166,6 +170,7 @@ export default function MatchDetail() {
   const participantCount = match.participants.filter(
     (participant: string) => participant !== ZERO_ADDRESS
   ).length
+  const nowSeconds = Math.floor(Date.now() / 1000)
 
   const isCreator = normalizedAddress !== '' && normalizedAddress === creatorAddress
   const isReferee = normalizedAddress !== '' && normalizedAddress === refereeAddress
@@ -176,10 +181,27 @@ export default function MatchDetail() {
     )
 
   const canJoin =
-    isConnected && !isParticipant && match.status === 0 && participantCount < 2
+    isConnected && !isParticipant && match.status === 0 && participantCount < 2 && nowSeconds < match.startTime
   const canSubmitResult =
     isConnected && isReferee && match.mode === 0 && match.status === 1
-  const canCancel = isConnected && isCreator && match.status === 0
+  const isUnfilledAfterStart = match.status === 0 && participantCount < 2 && nowSeconds >= match.startTime
+  const canCancel =
+    isConnected && match.status === 0 && (isCreator || isReferee || nowSeconds >= match.startTime)
+  const joinBlockedReason = !isConnected
+    ? 'Please connect your wallet first.'
+    : isParticipant
+      ? 'This wallet is already part of the duel.'
+      : match.status !== 0
+        ? 'This duel is no longer open for joining.'
+        : participantCount >= 2
+          ? 'This duel already has two participants.'
+          : nowSeconds >= match.startTime
+            ? 'This duel has already started, so new players cannot join.'
+            : null
+
+  const cancelDescription = isUnfilledAfterStart
+    ? 'This duel already started without enough participants. End it now and refund any existing stake.'
+    : 'Cancel the match and refund stakes to all participants'
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -435,10 +457,10 @@ export default function MatchDetail() {
         {canCancel && (
           <div>
             <h3 className="text-lg font-semibold text-white text-white mb-3">
-              Cancel Match
+              {isUnfilledAfterStart ? 'End Unfilled Match' : 'Cancel Match'}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Cancel the match and refund stakes to all participants
+              {cancelDescription}
             </p>
             <button
               onClick={handleCancelMatch}
@@ -453,10 +475,18 @@ export default function MatchDetail() {
               ) : (
                 <>
                   <XCircle size={20} />
-                  Cancel Match
+                  {isUnfilledAfterStart ? 'End Match & Refund' : 'Cancel Match'}
                 </>
               )}
             </button>
+          </div>
+        )}
+
+        {isUnfilledAfterStart && (
+          <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4">
+            <p className="text-sm font-medium text-amber-200">
+              This duel has already reached its start time without enough players. It can now be ended and refunded.
+            </p>
           </div>
         )}
 
@@ -471,6 +501,8 @@ export default function MatchDetail() {
                 ? 'Match completed'
                 : match.status === 3
                 ? 'Match cancelled'
+                : match.status === 0
+                ? joinBlockedReason || 'No actions available'
                 : 'No actions available'}
             </p>
           </div>
