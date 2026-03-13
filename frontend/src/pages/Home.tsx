@@ -65,7 +65,7 @@ export default function Home() {
           <div className="mb-8">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-xs font-mono tracking-wider uppercase">
               <Sparkles size={14} />
-              Polkadot Hackathon 2026 — Track 3
+              Polkadot Solidity Hackathon 2026
             </span>
           </div>
 

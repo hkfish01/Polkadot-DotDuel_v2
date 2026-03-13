@@ -2,8 +2,8 @@
 
 > 1v1 Duels + Bracket Tournaments + Prediction Markets — built on **Polkadot / Revive (EVM)**
 
-[![Polkadot Hackathon 2025](https://img.shields.io/badge/Polkadot%20Hackathon-2025-E6007A?style=flat-square)](https://polkadot.network)
-[![Track 3](https://img.shields.io/badge/Track%203-Original%20DApp-blueviolet?style=flat-square)](#)
+[![Polkadot Solidity Hackathon 2026](https://img.shields.io/badge/Polkadot%20Solidity%20Hackathon-2026-E6007A?style=flat-square)](https://polkadot.network)
+[![Original DApp](https://img.shields.io/badge/Category-Original%20DApp-blueviolet?style=flat-square)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 [![Version](https://img.shields.io/badge/version-2.0.0-blue?style=flat-square)](#)
 
@@ -260,8 +260,8 @@ VITE_USE_TESTNET=true
 
 ## Hackathon Info
 
-- **Event**: Polkadot Hackathon 2025
-- **Track**: Track 3 — Original DApp Development
+- **Event**: Polkadot Solidity Hackathon 2026
+- **Category**: Original DApp Development
 - **Team**: DotDuel
 - **Version**: v2.0.0
 

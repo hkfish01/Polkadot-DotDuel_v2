@@ -176,7 +176,7 @@ backend/
 
 ---
 
-**Made with ❤️ for Polkadot Hackathon 2025**
+**Made with ❤️ for Polkadot Solidity Hackathon 2026**
 
 **版本**: v0.6.0-mvp  
 **更新**: 2025-10-27

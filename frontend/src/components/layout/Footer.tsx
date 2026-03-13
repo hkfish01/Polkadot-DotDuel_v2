@@ -77,7 +77,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="mt-8 pt-6 border-t border-white/[0.06]">
           <div className="flex flex-col md:flex-row justify-between items-center text-xs text-gray-600">
-            <p>© 2025 DotDuel — Decentralised Prediction & Tournament Protocol. Built for Polkadot Hackathon.</p>
+            <p>© 2026 DotDuel — Decentralised Prediction & Tournament Protocol. Built for Polkadot Solidity Hackathon.</p>
             <p className="mt-2 md:mt-0 font-mono">v2.0.0</p>
           </div>
         </div>
