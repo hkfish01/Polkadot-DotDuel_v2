@@ -92,7 +92,7 @@ export default function ArenaDetail() {
   const { arena, loading, refetch: refetchArena } = useArenaDetail(arenaId)
   const { bets, refetch: refetchBets } = useArenaBets(arenaId)
   const { history } = useArenaOddsHistory(arenaId)
-  const { placeBet, resolveArena, claimWinnings, isPending, isConfirming, isConfirmed } = useArenaContract()
+  const { placeBet, resolveArena, claimWinnings, isPending, isConfirming, isConfirmed, error } = useArenaContract()
 
   const [betAmount, setBetAmount] = useState('0.01')
   const [selectedSide, setSelectedSide] = useState<1 | 2>(1)
@@ -105,6 +105,18 @@ export default function ArenaDetail() {
       refetchBets()
     }
   }, [isConfirmed])
+
+  useEffect(() => {
+    if (!error) return
+
+    const rawMessage = error.message || 'Transaction failed'
+    const cleanMessage = rawMessage
+      .replace(/^.*execution reverted:?\s*/i, '')
+      .replace(/^.*User rejected the request\.?\s*/i, 'Transaction rejected in wallet.')
+      .trim()
+
+    toast.error(cleanMessage || 'Transaction failed')
+  }, [error])
 
   if (loading) {
     return (
@@ -138,6 +150,15 @@ export default function ArenaDetail() {
   const now = Date.now() / 1000
   const canBet = isOpen && now < arena.bettingDeadline && !isCreator
   const canResolve = isCreator && now >= arena.bettingDeadline && now <= arena.resolveDeadline && !isResolved && arena.status !== 3
+  const betBlockedReason = !address
+    ? 'Please connect your wallet first.'
+    : !isOpen
+      ? `Betting is currently ${statusLabel.toLowerCase()}.`
+      : now >= arena.bettingDeadline
+        ? 'Betting deadline has passed for this arena.'
+        : isCreator
+          ? 'Arena creator cannot place bets on their own market.'
+          : null
 
   // User bets summary
   const userBets = bets.filter((b: any) => b.bettor?.toLowerCase() === address?.toLowerCase())
@@ -149,10 +170,16 @@ export default function ArenaDetail() {
   )
 
   const handleBet = () => {
+    if (!canBet) {
+      toast.error(betBlockedReason || 'Betting is not available right now')
+      return
+    }
+
     try {
       const amount = parseEther(betAmount)
       placeBet(arenaId, selectedSide, amount)
-    } catch {
+    } catch (err: any) {
+      console.error('Place bet error:', err)
       toast.error('Invalid bet amount')
     }
   }
@@ -296,6 +323,16 @@ export default function ArenaDetail() {
           >
             {isPending ? 'Confirm in wallet...' : isConfirming ? 'Processing...' : `Bet on ${selectedSide === 1 ? arena.sideA : arena.sideB}`}
           </button>
+        </div>
+      )}
+
+      {!canBet && (
+        <div className="bg-white/[0.03] backdrop-blur-sm rounded-2xl shadow-sm p-6 border border-amber-500/30">
+          <h2 className="text-lg font-bold text-white mb-2">Betting Unavailable</h2>
+          <p className="text-sm text-amber-300">{betBlockedReason}</p>
+          <p className="text-xs text-gray-400 mt-2">
+            Betting window: until {bettingDeadline.toLocaleString()}
+          </p>
         </div>
       )}
 
