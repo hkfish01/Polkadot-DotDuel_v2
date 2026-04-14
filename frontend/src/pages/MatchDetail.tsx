@@ -269,10 +269,10 @@ export default function MatchDetail() {
                 Stake Amount
               </p>
               <p className="text-lg font-semibold text-white text-white">
-                {formatEther(stakeAmountWei)} PAS
+                {formatEther(stakeAmountWei)} HSK
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Total Prize Pool: {formatEther(totalPoolWei)} PAS
+                Total Prize Pool: {formatEther(totalPoolWei)} HSK
               </p>
             </div>
           </div>
@@ -393,7 +393,7 @@ export default function MatchDetail() {
               Join Match
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Stake {formatEther(stakeAmountWei)} PAS to join
+              Stake {formatEther(stakeAmountWei)} HSK to join
             </p>
             <button
               onClick={handleJoinMatch}

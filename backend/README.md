@@ -1,4 +1,4 @@
-# Polkadot Duel Platform - Backend API
+# DotDuel - Backend API
 
 > 去中心化對賭平台後端 API 服務
 
@@ -34,7 +34,7 @@ cp .env.example .env
 # Oracle 配置
 ORACLE_PRIVATE_KEY=your_private_key_here
 CONTRACT_ADDRESS=0x...
-RPC_URL=https://passet-hub-testnet.polkadot.io
+RPC_URL=https://testnet.hsk.xyz
 
 # mydupr API
 MYDUPR_API_URL=https://api.mydupr.com
@@ -176,7 +176,7 @@ backend/
 
 ---
 
-**Made with ❤️ for Polkadot Solidity Hackathon 2026**
+**Made with ❤️ for HashKey On-Chain Horizon Hackathon 2026 (DeFi Track)**
 
 **版本**: v0.6.0-mvp  
 **更新**: 2025-10-27

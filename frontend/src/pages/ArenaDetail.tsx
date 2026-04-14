@@ -205,7 +205,7 @@ function MiniOddsChart({ history, sideA, sideB }: { history: any[]; sideA: strin
       </div>
 
       <div className="mt-2 rounded-lg border border-white/[0.08] bg-white/[0.02] px-3 py-2 text-xs text-gray-300">
-        Step {visibleCount}: {currentStep?.side === 1 ? sideA : sideB} bet by {currentStep?.bettor?.slice?.(0, 6)}...{currentStep?.bettor?.slice?.(-4)} ({currentBetAmount} PAS)
+        Step {visibleCount}: {currentStep?.side === 1 ? sideA : sideB} bet by {currentStep?.bettor?.slice?.(0, 6)}...{currentStep?.bettor?.slice?.(-4)} ({currentBetAmount} HSK)
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
@@ -351,7 +351,7 @@ export default function ArenaDetail() {
           <div>
             <Trophy className="w-5 h-5 mx-auto mb-1 text-orange-400" />
             <p className="text-2xl font-bold">{poolDisplay}</p>
-            <p className="text-xs text-gray-400">Prize Pool (PAS)</p>
+            <p className="text-xs text-gray-400">Prize Pool (HSK)</p>
           </div>
           <div>
             <Users className="w-5 h-5 mx-auto mb-1 text-orange-400" />
@@ -378,13 +378,13 @@ export default function ArenaDetail() {
           <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-3">
             <p className="text-sm text-blue-600 dark:text-blue-400 font-semibold">{arena.sideA}</p>
             <p className="text-xl font-bold text-white text-white">
-              {Number(formatEther(totalA)).toFixed(4)} PAS
+              {Number(formatEther(totalA)).toFixed(4)} HSK
             </p>
           </div>
           <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-3">
             <p className="text-sm text-red-600 dark:text-red-400 font-semibold">{arena.sideB}</p>
             <p className="text-xl font-bold text-white text-white">
-              {Number(formatEther(totalB)).toFixed(4)} PAS
+              {Number(formatEther(totalB)).toFixed(4)} HSK
             </p>
           </div>
         </div>
@@ -433,7 +433,7 @@ export default function ArenaDetail() {
           {/* Amount */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-200 text-gray-300 mb-1">
-              Bet Amount (PAS)
+              Bet Amount (HSK)
             </label>
             <input
               type="number"
@@ -450,7 +450,7 @@ export default function ArenaDetail() {
                   onClick={() => setBetAmount(v)}
                   className="px-3 py-1 text-xs bg-white/[0.04] dark:bg-white/[0.05] rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
                 >
-                  {v} PAS
+                  {v} HSK
                 </button>
               ))}
             </div>
@@ -486,12 +486,12 @@ export default function ArenaDetail() {
           <h2 className="text-lg font-bold text-white text-white mb-3">Your Bets</h2>
           {userSideA > 0n && (
             <p className="text-blue-600 dark:text-blue-400 font-semibold">
-              {arena.sideA}: {Number(formatEther(userSideA)).toFixed(4)} PAS
+              {arena.sideA}: {Number(formatEther(userSideA)).toFixed(4)} HSK
             </p>
           )}
           {userSideB > 0n && (
             <p className="text-red-600 dark:text-red-400 font-semibold">
-              {arena.sideB}: {Number(formatEther(userSideB)).toFixed(4)} PAS
+              {arena.sideB}: {Number(formatEther(userSideB)).toFixed(4)} HSK
             </p>
           )}
           {hasWinningBet && (
@@ -566,7 +566,7 @@ export default function ArenaDetail() {
                     {bet.side === 1 ? arena.sideA : arena.sideB}
                   </span>
                   <span className="font-bold text-white text-white">
-                    {Number(formatEther(BigInt(bet.amountWei))).toFixed(4)} PAS
+                    {Number(formatEther(BigInt(bet.amountWei))).toFixed(4)} HSK
                   </span>
                 </div>
               </div>

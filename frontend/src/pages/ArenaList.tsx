@@ -46,7 +46,7 @@ export default function ArenaList() {
           <div>
             <p className="text-sm text-orange-200 mb-1">Total Pool Volume</p>
             <p className="text-3xl font-bold">
-              {Number(formatEther(totalPoolWei)).toFixed(3)} PAS
+              {Number(formatEther(totalPoolWei)).toFixed(3)} HSK
             </p>
           </div>
           <div className="text-right">
@@ -135,7 +135,7 @@ export default function ArenaList() {
               <div className="px-5 pb-5 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                 <div className="flex items-center gap-1">
                   <Trophy size={14} className="text-orange-500" />
-                  <span>{pool.toFixed(3)} PAS</span>
+                  <span>{pool.toFixed(3)} HSK</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Users size={14} />

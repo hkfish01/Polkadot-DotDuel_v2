@@ -13,7 +13,7 @@ export class OracleService {
   constructor() {
     // Initialize provider
     this.provider = new ethers.JsonRpcProvider(
-      process.env.RPC_URL || 'https://rpc.sepolia.mantle.xyz'
+      process.env.RPC_URL || 'https://testnet.hsk.xyz'
     )
 
     // Initialize wallet (requires private key)
@@ -177,7 +177,7 @@ export class OracleService {
       isRunning: this.isRunning,
       oracleAddress: this.wallet.address,
       contractAddress: this.contract.target,
-      network: process.env.RPC_URL || 'https://rpc.sepolia.mantle.xyz'
+      network: process.env.RPC_URL || 'https://testnet.hsk.xyz'
     }
   }
 }

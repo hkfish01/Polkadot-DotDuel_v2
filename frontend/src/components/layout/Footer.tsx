@@ -12,7 +12,7 @@ export default function Footer() {
             </h3>
             <p className="text-gray-500 text-sm leading-relaxed">
               DotDuel is a decentralised 1v1 prediction & tournament platform
-              built on Polkadot with Revive (REVM) technology.
+              built for HashKey Chain Testnet in the DeFi track.
             </p>
           </div>
 
@@ -33,8 +33,8 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="https://wiki.polkadot.network" className="text-gray-500 hover:text-emerald-400 transition-colors">
-                  Polkadot Wiki
+                <a href="https://testnet-explorer.hsk.xyz" className="text-gray-500 hover:text-emerald-400 transition-colors">
+                  HashKey Explorer
                 </a>
               </li>
             </ul>
@@ -77,7 +77,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="mt-8 pt-6 border-t border-white/[0.06]">
           <div className="flex flex-col md:flex-row justify-between items-center text-xs text-gray-600">
-            <p>© 2026 DotDuel — Decentralised Prediction & Tournament Protocol. Built for Polkadot Solidity Hackathon.</p>
+            <p>© 2026 DotDuel — Decentralised Prediction & Tournament Protocol. Built for HashKey On-Chain Horizon Hackathon (DeFi Track).</p>
             <p className="mt-2 md:mt-0 font-mono">v2.0.0</p>
           </div>
         </div>

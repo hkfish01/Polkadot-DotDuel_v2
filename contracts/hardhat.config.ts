@@ -23,6 +23,12 @@ const config: HardhatUserConfig = {
       url: "http://127.0.0.1:8545",
       chainId: 1337,
     },
+    // HashKey Chain Testnet (hackathon target)
+    hashKeyTestnet: {
+      url: process.env.HASHKEY_TESTNET_RPC_URL || "https://testnet.hsk.xyz",
+      chainId: 133,
+      accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [],
+    },
     // Mantle Mainnet
     mantle: {
       url: process.env.MANTLE_RPC_URL || "https://rpc.mantle.xyz",

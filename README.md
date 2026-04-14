@@ -1,9 +1,9 @@
 # DotDuel — Decentralised Prediction & Tournament Protocol
 
-> 1v1 Duels + Bracket Tournaments + Prediction Markets — built on **Polkadot / Revive (EVM)**
+> 1v1 Duels + Bracket Tournaments + Prediction Markets — built on **HashKey Chain Testnet (EVM)**
 
-[![Polkadot Solidity Hackathon 2026](https://img.shields.io/badge/Polkadot%20Solidity%20Hackathon-2026-E6007A?style=flat-square)](https://polkadot.network)
-[![Original DApp](https://img.shields.io/badge/Category-Original%20DApp-blueviolet?style=flat-square)](#)
+[![HashKey On-Chain Horizon Hackathon 2026](https://img.shields.io/badge/HashKey%20On--Chain%20Horizon%20Hackathon-2026-00A86B?style=flat-square)](https://hashkeychain.io)
+[![Track](https://img.shields.io/badge/Track-DeFi-00A86B?style=flat-square)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 [![Version](https://img.shields.io/badge/version-2.0.0-blue?style=flat-square)](#)
 
@@ -13,7 +13,7 @@
 
 **DotDuel** is a decentralised peer-to-peer prediction protocol with two core products:
 
-1. **1v1 Duels** — Two players stake ETH on a match outcome. A referee or automated oracle settles the result, and the smart contract distributes winnings.
+1. **1v1 Duels** — Two players stake HSK on a match outcome. A referee or automated oracle settles the result, and the smart contract distributes winnings.
 2. **Tournament Brackets** — 4 / 8 / 16-player single-elimination brackets with entry fees and prize pools (60% / 25% / 15% for 1st / 2nd / 3rd).
 3. **Prediction Market** — Polymarket-inspired side bets where spectators predict the tournament winner and earn a share of the prediction pool.
 
@@ -41,7 +41,7 @@ All logic — stakes, settlement, and payouts — lives entirely on-chain in Sol
 | **Smart Contracts** | Solidity 0.8.20, OpenZeppelin 5.x, Hardhat |
 | **Frontend** | React 18, TypeScript, Vite 5, Tailwind CSS 3, wagmi 2, @tanstack/react-query 5 |
 | **Backend** | Node.js, Express 4, TypeScript, ethers v6 (read-only chain indexer, no DB) |
-| **Blockchain** | Polkadot / Revive (EVM-compatible via REVM) — currently on Mantle for dev |
+| **Blockchain** | HashKey Chain Testnet (EVM-compatible) |
 | **Wallet** | MetaMask via wagmi injected connector |
 
 ---
@@ -109,7 +109,7 @@ cp .env.example .env
 # Edit .env -> set DEPLOYER_PRIVATE_KEY, PLATFORM_WALLET, ORACLE_ADDRESS
 
 npx hardhat compile
-npx hardhat run scripts/deploy.ts --network mantleSepolia   # or your target network
+npx hardhat run scripts/deploy.ts --network hashKeyTestnet   # or your target network
 ```
 
 The deploy script outputs the addresses for **DuelPlatform** and **TournamentPlatform**.
@@ -226,7 +226,7 @@ ORACLE_ADDRESS=0x...
 
 ```
 PORT=3001
-RPC_URL=https://rpc.sepolia.mantle.xyz
+RPC_URL=https://testnet.hsk.xyz
 CONTRACT_ADDRESS=0x...
 TOURNAMENT_ADDRESS=0x...
 ```
@@ -250,7 +250,7 @@ VITE_USE_TESTNET=true
 - [x] Tournament bracket contract (4/8/16 players)
 - [x] Prediction market (Polymarket-style)
 - [x] Full English UI
-- [ ] Migrate chain config to Polkadot Revive testnet/mainnet
+- [ ] Production rollout and monitoring on HashKey Chain mainnet
 - [ ] Oracle auto-settlement integration (mydupr API)
 - [ ] Database layer (PostgreSQL) for faster queries
 - [ ] Mobile-responsive design refinements
@@ -260,8 +260,8 @@ VITE_USE_TESTNET=true
 
 ## Hackathon Info
 
-- **Event**: Polkadot Solidity Hackathon 2026
-- **Category**: Original DApp Development
+- **Event**: HashKey On-Chain Horizon Hackathon 2026
+- **Category**: DeFi Track
 - **Team**: DotDuel
 - **Version**: v2.0.0
 
@@ -273,4 +273,4 @@ MIT
 
 ---
 
-**Made with care for the Polkadot ecosystem.**
+**Made with care for the HashKey ecosystem.**

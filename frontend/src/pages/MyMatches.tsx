@@ -144,7 +144,7 @@ export default function MyMatches() {
           </p>
           {!statsLoading && (
             <p className="text-xs text-gray-500 text-gray-500 mt-2">
-              Total staked: {formatEther(totalStakedWei)} PAS
+              Total staked: {formatEther(totalStakedWei)} HSK
             </p>
           )}
         </div>
@@ -188,7 +188,7 @@ export default function MyMatches() {
           </p>
           {!statsLoading && (
             <p className="text-xs text-gray-500 text-gray-500 mt-2">
-              Total won: {formatEther(totalWonWei)} PAS
+              Total won: {formatEther(totalWonWei)} HSK
             </p>
           )}
         </div>

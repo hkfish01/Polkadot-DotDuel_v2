@@ -51,7 +51,7 @@ export default function Home() {
 
   const { data: stats } = usePlatformStats()
   const totalMatches = stats?.totalMatches ?? 0
-  const totalVolumeETH = stats ? Number(formatEther(BigInt(stats.totalVolumeWei))) : 0
+  const totalVolumeNative = stats ? Number(formatEther(BigInt(stats.totalVolumeWei))) : 0
   const totalUsers = stats?.totalUsers ?? 0
 
   return (
@@ -65,7 +65,7 @@ export default function Home() {
           <div className="mb-8">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-xs font-mono tracking-wider uppercase">
               <Sparkles size={14} />
-              Polkadot Solidity Hackathon 2026
+              HashKey On-Chain Horizon Hackathon 2026 · DeFi Track
             </span>
           </div>
 
@@ -79,7 +79,7 @@ export default function Home() {
 
           <p className="text-lg text-gray-400 mb-10 max-w-xl mx-auto leading-relaxed">
             Peer-to-peer predictions and bracket tournaments with on-chain settlement.
-            Stake, compete, and earn — powered by Polkadot.
+            Stake, compete, and earn — powered by HashKey Chain Testnet.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -144,8 +144,8 @@ export default function Home() {
               <div className="text-emerald-400/70 text-sm uppercase tracking-widest font-medium">Total Duels</div>
             </div>
             <div>
-              <div className="text-5xl md:text-6xl font-black text-white mb-2 font-mono">{totalVolumeETH.toFixed(2)}</div>
-              <div className="text-emerald-400/70 text-sm uppercase tracking-widest font-medium">Volume (PAS)</div>
+              <div className="text-5xl md:text-6xl font-black text-white mb-2 font-mono">{totalVolumeNative.toFixed(2)}</div>
+              <div className="text-emerald-400/70 text-sm uppercase tracking-widest font-medium">Volume (HSK)</div>
             </div>
             <div>
               <div className="text-5xl md:text-6xl font-black text-white mb-2 font-mono">{totalUsers}</div>
@@ -162,8 +162,8 @@ export default function Home() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { step: '01', title: 'Connect Wallet', desc: 'Connect MetaMask to the Polkadot network' },
-            { step: '02', title: 'Create or Join', desc: 'Stake PAS on a 1v1 duel or join a tournament bracket' },
+            { step: '01', title: 'Connect Wallet', desc: 'Connect MetaMask to HashKey Chain Testnet' },
+            { step: '02', title: 'Create or Join', desc: 'Stake HSK on a 1v1 duel or join a tournament bracket' },
             { step: '03', title: 'Auto Settlement', desc: 'Smart contract distributes winnings automatically' },
           ].map((item) => (
             <div key={item.step} className="text-center group">

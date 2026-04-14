@@ -3,8 +3,8 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-// Default to Mantle Sepolia Testnet
-const RPC_URL = process.env.RPC_URL || 'https://rpc.sepolia.mantle.xyz'
+// Default to HashKey Chain Testnet
+const RPC_URL = process.env.RPC_URL || 'https://testnet.hsk.xyz'
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS
 
 if (!CONTRACT_ADDRESS || CONTRACT_ADDRESS === ethers.ZeroAddress) {

@@ -197,7 +197,7 @@ export default function CreateArena() {
             </div>
             <div>
               <span className="text-gray-500">Min Bet:</span>{' '}
-              <span className="font-medium text-white text-white">0.001 PAS</span>
+              <span className="font-medium text-white text-white">0.001 HSK</span>
             </div>
           </div>
         </div>

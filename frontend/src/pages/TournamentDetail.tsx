@@ -35,6 +35,13 @@ const formatDate = (timestamp: number) => {
   })
 }
 
+const formatTokenAmount = (wei: bigint): string => {
+  const value = Number(formatEther(wei))
+  if (value === 0) return '0.000'
+  if (value < 0.001) return '<0.001'
+  return value.toFixed(3)
+}
+
 export default function TournamentDetail() {
   const { id } = useParams<{ id: string }>()
   const tournamentId = id ? parseInt(id) : 0
@@ -167,7 +174,6 @@ export default function TournamentDetail() {
   const canSubmitTournamentResult = isConnected && tournament.status === 1
   const prizePool = Number(formatEther(BigInt(tournament.prizePool || 0)))
   const entryFee = Number(formatEther(BigInt(tournament.entryFee || 0)))
-  const predictionPool = Number(formatEther(BigInt(tournament.predictionPool || 0)))
   const predictionSummary = (() => {
     const groups = new Map<string, { totalAmount: bigint; betCount: number }>()
 
@@ -230,11 +236,11 @@ export default function TournamentDetail() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div>
               <p className="text-sm text-white/70 mb-1">Prize Pool</p>
-              <p className="text-2xl font-bold">{prizePool.toFixed(3)} PAS</p>
+              <p className="text-2xl font-bold">{prizePool.toFixed(3)} HSK</p>
             </div>
             <div>
               <p className="text-sm text-white/70 mb-1">Entry Fee</p>
-              <p className="text-2xl font-bold">{entryFee.toFixed(3)} PAS</p>
+              <p className="text-2xl font-bold">{entryFee.toFixed(3)} HSK</p>
             </div>
             <div>
               <p className="text-sm text-white/70 mb-1">Players</p>
@@ -260,7 +266,7 @@ export default function TournamentDetail() {
             disabled={isPending}
             className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 transition-all"
           >
-            {isPending ? 'Registering...' : `Register (${entryFee.toFixed(3)} PAS)`}
+            {isPending ? 'Registering...' : `Register (${entryFee.toFixed(3)} HSK)`}
           </button>
         )}
         {isRegistered && tournament.status === 0 && (
@@ -474,7 +480,7 @@ export default function TournamentDetail() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-200 text-gray-300 mb-1">
-                    Amount (PAS)
+                    Amount (HSK)
                   </label>
                   <input
                     type="number"
@@ -518,7 +524,7 @@ export default function TournamentDetail() {
                     </div>
                     <div className="text-right">
                       <span className="text-sm font-semibold text-emerald-400 dark:text-emerald-400">
-                        {Number(formatEther(pred.totalAmount)).toFixed(3)} PAS
+                        {formatTokenAmount(pred.totalAmount)} HSK
                       </span>
                       <span className="text-xs text-gray-500 ml-2">
                         ({pred.betCount} bets)
@@ -606,7 +612,7 @@ export default function TournamentDetail() {
           <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/[0.06]">
             <span className="text-gray-500">Prediction Pool</span>
             <span className="text-gray-200 text-gray-300">
-              {predictionPool.toFixed(3)} PAS
+              {formatTokenAmount(BigInt(tournament.predictionPool || '0'))} HSK
             </span>
           </div>
           {(tournament as any).winner && (tournament as any).winner !== '0x0000000000000000000000000000000000000000' && (

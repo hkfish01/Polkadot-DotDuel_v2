@@ -103,13 +103,55 @@ export const polkadotHub = {
   testnet: true,
 }
 
+// HashKey Chain Testnet (On-Chain Horizon Hackathon target)
+export const hashKeyTestnet = {
+  id: 133,
+  name: 'HashKey Chain Testnet',
+  network: 'hashkey-chain-testnet',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'HSK',
+    symbol: 'HSK',
+  },
+  rpcUrls: {
+    default: {
+      http: [import.meta.env.VITE_RPC_URL || 'https://testnet.hsk.xyz'],
+    },
+    public: {
+      http: ['https://testnet.hsk.xyz'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'HashKey Explorer',
+      url: 'https://testnet-explorer.hsk.xyz',
+    },
+  },
+  testnet: true,
+}
+
 // Select network based on environment variable
 const rpcUrl = import.meta.env.VITE_RPC_URL || ''
 const isLocalhost = rpcUrl.includes('127.0.0.1') || rpcUrl.includes('localhost')
+const isHashKey = rpcUrl.includes('hsk.xyz') || rpcUrl.includes('hashkey')
 const isPolkadotHub = rpcUrl.includes('polkadot.io')
+const isMantleSepolia = rpcUrl.includes('sepolia.mantle')
+const isMantleMainnet = rpcUrl.includes('rpc.mantle.xyz')
 const useTestnet = import.meta.env.VITE_USE_TESTNET === 'true'
 
-export const currentChain = isLocalhost ? localhost : isPolkadotHub ? polkadotHub : useTestnet ? mantleSepolia : mantleMainnet
+export const currentChain = isLocalhost
+  ? localhost
+  : isHashKey
+    ? hashKeyTestnet
+    : isPolkadotHub
+      ? polkadotHub
+      : isMantleSepolia
+        ? mantleSepolia
+        : isMantleMainnet
+          ? mantleMainnet
+          : useTestnet
+            ? hashKeyTestnet
+            : mantleMainnet
 
 // Wagmi config
 export const config = createConfig({
@@ -122,6 +164,7 @@ export const config = createConfig({
     [mantleMainnet.id]: http(),
     [mantleSepolia.id]: http(),
     [polkadotHub.id]: http(),
+    [hashKeyTestnet.id]: http(),
   },
 })
 
@@ -129,7 +172,7 @@ export const config = createConfig({
 export const CONTRACT_ADDRESS = import.meta.env.VITE_CONTRACT_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000'
 export const ARENA_ADDRESS = import.meta.env.VITE_ARENA_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000'
 
-console.log('📋 Wagmi Config Loaded - v0.3.0-mantle')
+console.log('📋 Wagmi Config Loaded - v0.4.0-hashkey')
 console.log('🔗 Contract Address:', CONTRACT_ADDRESS)
 console.log('🔗 Arena Address:', ARENA_ADDRESS)
 console.log('🌐 Network:', currentChain.name)

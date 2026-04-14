@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-const RPC_URL = process.env.RPC_URL || 'https://eth-rpc-testnet.polkadot.io/'
+const RPC_URL = process.env.RPC_URL || 'https://testnet.hsk.xyz'
 const ARENA_ADDRESS = process.env.ARENA_ADDRESS
 
 if (!ARENA_ADDRESS || ARENA_ADDRESS === ethers.ZeroAddress) {

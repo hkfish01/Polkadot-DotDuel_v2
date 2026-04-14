@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-const RPC_URL = process.env.RPC_URL || 'https://rpc.sepolia.mantle.xyz'
+const RPC_URL = process.env.RPC_URL || 'https://testnet.hsk.xyz'
 const TOURNAMENT_ADDRESS = process.env.TOURNAMENT_ADDRESS
 
 if (!TOURNAMENT_ADDRESS || TOURNAMENT_ADDRESS === ethers.ZeroAddress) {
