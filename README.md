@@ -11,7 +11,7 @@
 
 ## Overview
 
-**DotDuel** is a decentralised peer-to-peer prediction protocol with two core products:
+**DotDuel** is a decentralised peer-to-peer sports prediction protocol with two core products:
 
 1. **1v1 Duels** — Two players stake HSK on a match outcome. A referee or automated oracle settles the result, and the smart contract distributes winnings.
 2. **Tournament Brackets** — 4 / 8 / 16-player single-elimination brackets with entry fees and prize pools (60% / 25% / 15% for 1st / 2nd / 3rd).

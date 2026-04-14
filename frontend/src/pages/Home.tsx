@@ -73,7 +73,7 @@ export default function Home() {
             DotDuel
             <br />
             <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400 text-transparent bg-clip-text">
-              Prediction Protocol
+              Sports Prediction Protocol
             </span>
           </h1>
 

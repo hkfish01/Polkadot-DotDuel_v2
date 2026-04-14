@@ -143,7 +143,7 @@ DotDuel 是一個構建在 Polkadot 生態系統上的去中心化點對點預�
 
 ### 英文
 - Predict. Lock. Win.
-- Not Gambling, It's Prediction Protocol
+- Not Gambling, It's Sports Prediction Protocol
 - Code-Guaranteed Fairness
 - DotDuel: Smart Contracts for Sports Fans
 
